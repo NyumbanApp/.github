@@ -7,7 +7,10 @@ const MIN_CHECKLIST_ITEMS = 6;
 export function shouldSkip({ draft, author, labels }) {
   if (draft) return { skip: true, reason: 'draft PR' };
   if (SKIP_AUTHORS.has(author)) return { skip: true, reason: 'bot author' };
-  if (labels.includes('skip-pr-template')) return { skip: true, reason: 'skip-pr-template label' };
+  const labelNames = labels.map((label) =>
+    typeof label === 'string' ? label : label?.name,
+  );
+  if (labelNames.includes('skip-pr-template')) return { skip: true, reason: 'skip-pr-template label' };
   return { skip: false };
 }
 
@@ -204,7 +207,8 @@ export async function main() {
   const body = process.env.PR_BODY ?? '';
   const draft = process.env.PR_DRAFT === 'true';
   const author = process.env.PR_AUTHOR ?? '';
-  const labels = JSON.parse(process.env.PR_LABELS ?? '[]');
+  const labelsRaw = JSON.parse(process.env.PR_LABELS ?? '[]');
+  const labels = labelsRaw.map((label) => (typeof label === 'string' ? label : label.name));
   const repo = process.env.REPO ?? '';
   const projectNumber = Number.parseInt(process.env.PROJECT_NUMBER ?? '3', 10);
   const token = process.env.GITHUB_TOKEN ?? '';

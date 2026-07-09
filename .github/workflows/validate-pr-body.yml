@@ -7,6 +7,22 @@ on:
         description: Org project number for board check
         type: number
         default: 3
+      pr_body:
+        description: Pull request body markdown
+        type: string
+        required: true
+      pr_draft:
+        description: Whether the pull request is a draft
+        type: boolean
+        required: true
+      pr_author:
+        description: Pull request author login
+        type: string
+        required: true
+      pr_labels_json:
+        description: JSON array of PR label objects
+        type: string
+        default: '[]'
 
 permissions:
   pull-requests: read
@@ -26,10 +42,10 @@ jobs:
 
       - name: Run PR body validator
         env:
-          PR_BODY: ${{ github.event.pull_request.body }}
-          PR_DRAFT: ${{ github.event.pull_request.draft }}
-          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
-          PR_LABELS: ${{ toJSON(github.event.pull_request.labels.*.name) }}
+          PR_BODY: ${{ inputs.pr_body }}
+          PR_DRAFT: ${{ inputs.pr_draft }}
+          PR_AUTHOR: ${{ inputs.pr_author }}
+          PR_LABELS: ${{ inputs.pr_labels_json }}
           REPO: ${{ github.repository }}
           PROJECT_NUMBER: ${{ inputs.project_number }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

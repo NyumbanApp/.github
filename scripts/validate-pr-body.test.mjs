@@ -53,6 +53,13 @@ describe('shouldSkip', () => {
       true,
     );
   });
+
+  it('skips with label objects', () => {
+    assert.equal(
+      shouldSkip({ draft: false, author: 'dev', labels: [{ name: 'skip-pr-template' }] }).skip,
+      true,
+    );
+  });
 });
 
 describe('parseClosesIssueNumber', () => {
