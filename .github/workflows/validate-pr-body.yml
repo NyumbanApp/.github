@@ -1,0 +1,36 @@
+name: Validate PR body
+
+on:
+  workflow_call:
+    inputs:
+      project_number:
+        description: Org project number for board check
+        type: number
+        default: 3
+
+permissions:
+  pull-requests: read
+  issues: read
+  contents: read
+
+jobs:
+  validate:
+    name: PR template check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout org validator
+        uses: actions/checkout@v4
+        with:
+          repository: NyumbanApp/.github
+          path: org-github
+
+      - name: Run PR body validator
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+          PR_DRAFT: ${{ github.event.pull_request.draft }}
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+          PR_LABELS: ${{ toJSON(github.event.pull_request.labels.*.name) }}
+          REPO: ${{ github.repository }}
+          PROJECT_NUMBER: ${{ inputs.project_number }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node org-github/scripts/validate-pr-body.mjs
