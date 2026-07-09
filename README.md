@@ -4,6 +4,8 @@ This repository holds **organization-wide default community health files** for [
 
 Repos in the org that do not define their own template will inherit these defaults.
 
+> **Note:** This repository must remain **public** for org-wide issue and PR templates to apply. Other community health files can use a public or internal `.github` repo; PR/issue templates specifically require public.
+
 ## Contents
 
 | File | Purpose |
