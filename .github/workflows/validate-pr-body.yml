@@ -10,15 +10,18 @@ on:
       pr_body:
         description: Pull request body markdown
         type: string
-        required: true
+        required: false
+        default: ''
       pr_draft:
-        description: Whether the pull request is a draft
-        type: boolean
-        required: true
+        description: Whether the pull request is a draft (true/false string)
+        type: string
+        required: false
+        default: 'false'
       pr_author:
         description: Pull request author login
         type: string
-        required: true
+        required: false
+        default: ''
       pr_labels_json:
         description: JSON array of PR label objects
         type: string
