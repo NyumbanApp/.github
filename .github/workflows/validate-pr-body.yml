@@ -23,12 +23,15 @@ on:
         description: JSON array of PR label objects
         type: string
         default: '[]'
+    secrets:
+      PR_BOARD_CHECK_TOKEN:
+        description: Optional fine-grained PAT with org Projects read for board verification
+        required: false
 
 permissions:
   pull-requests: read
   issues: read
   contents: read
-  projects: read
 
 jobs:
   validate:
@@ -50,4 +53,5 @@ jobs:
           REPO: ${{ github.repository }}
           PROJECT_NUMBER: ${{ inputs.project_number }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BOARD_CHECK_TOKEN: ${{ secrets.PR_BOARD_CHECK_TOKEN }}
         run: node org-github/scripts/validate-pr-body.mjs
