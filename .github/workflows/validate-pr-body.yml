@@ -28,6 +28,7 @@ permissions:
   pull-requests: read
   issues: read
   contents: read
+  projects: read
 
 jobs:
   validate:

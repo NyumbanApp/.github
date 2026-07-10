@@ -12,7 +12,9 @@ Shared defaults for all [NyumbanApp](https://github.com/NyumbanApp) repositories
 | [`.github/workflows/validate-pr-body.yml`](./.github/workflows/validate-pr-body.yml) | Reusable workflow: PR template check |
 | [`scripts/validate-pr-body.mjs`](./scripts/validate-pr-body.mjs) | Validation logic |
 
-Application repos opt in with `.github/workflows/pr-template-check.yml` calling the reusable workflow above.
+Application repos opt in with `.github/workflows/pr-template-check.yml` calling the reusable workflow above (do not duplicate the validator inline).
+
+The reusable workflow requires `projects: read` so `GITHUB_TOKEN` can verify the linked issue is on the org project board via GraphQL `projectItems`.
 
 ## Workflow
 
