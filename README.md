@@ -12,9 +12,19 @@ Shared defaults for all [NyumbanApp](https://github.com/NyumbanApp) repositories
 | [`.github/workflows/validate-pr-body.yml`](./.github/workflows/validate-pr-body.yml) | Reusable workflow: PR template check |
 | [`scripts/validate-pr-body.mjs`](./scripts/validate-pr-body.mjs) | Validation logic |
 
-Application repos opt in with `.github/workflows/pr-template-check.yml` calling the reusable workflow above (do not duplicate the validator inline).
+Application repos opt in with `.github/workflows/pr-template-check.yml` that checks out this validator (do not duplicate validation logic inline).
 
-Board membership uses GraphQL `projectItems`, which requires a fine-grained PAT with **Organization → Projects: Read**. Store it as org secret `PR_BOARD_CHECK_TOKEN` and pass `BOARD_CHECK_TOKEN` to the validator (falls back to `GITHUB_TOKEN` when unset).
+### Board check (phased)
+
+| Phase | Secret | Board CI |
+|-------|--------|----------|
+| **1 — Free, no PAT** | None | Skipped (lead confirms issue on [project 3](https://github.com/orgs/NyumbanApp/projects/3)) |
+| **2 — Free + repo secrets** | `PR_BOARD_CHECK_TOKEN` per app repo | Strict GraphQL board check |
+| **3 — GitHub Team** | Org `PR_BOARD_CHECK_TOKEN` | Strict (delete per-repo copies) |
+
+Board membership uses GraphQL `projectItems`, which requires a fine-grained PAT with **Organization → Projects: Read**. Store as repository secret `PR_BOARD_CHECK_TOKEN` on Free (org secrets do not apply to private repos on Free). Pass via workflow env `BOARD_CHECK_TOKEN`.
+
+Linked issue existence/open state always uses `GITHUB_TOKEN` (no PAT required).
 
 ## Workflow
 

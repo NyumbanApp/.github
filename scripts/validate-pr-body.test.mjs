@@ -135,29 +135,54 @@ describe('validatePrBody', () => {
     const result = await validatePrBody({
       body: VALID_BODY,
       repo: 'NyumbanApp/nyumban-mobile-app-frontend',
-      token: 'fake',
-      fetchIssue: async () => [`Issue #153 is closed — link an open issue`],
+      githubToken: 'fake',
+      validateLinkedIssueFn: async () => [`Issue #153 is closed — link an open issue`],
     });
     assert.ok(result.errors.length > 0);
   });
 
-  it('fails issue not on board via mock', async () => {
+  it('fails issue not on board when board token configured', async () => {
     const result = await validatePrBody({
       body: VALID_BODY,
       repo: 'NyumbanApp/nyumban-mobile-app-frontend',
-      token: 'fake',
-      fetchIssue: async () => [`Issue #153 is not on Project #3 (Nyumban V1 Launch board)`],
+      githubToken: 'fake',
+      boardCheckToken: 'board-pat',
+      validateLinkedIssueFn: async () => [],
+      validateIssueOnProjectBoardFn: async () => [
+        `Issue #153 is not on Project #3 (Nyumban V1 Launch board)`,
+      ],
     });
     assert.ok(result.errors.some((e) => e.includes('Project #3')));
   });
 
-  it('passes with mock API', async () => {
+  it('skips board check without board token', async () => {
+    let boardCalled = false;
     const result = await validatePrBody({
       body: VALID_BODY,
       repo: 'NyumbanApp/nyumban-mobile-app-frontend',
-      token: 'fake',
-      fetchIssue: async () => [],
+      githubToken: 'fake',
+      validateLinkedIssueFn: async () => [],
+      validateIssueOnProjectBoardFn: async () => {
+        boardCalled = true;
+        return [];
+      },
+      onBoardCheckSkipped: () => {},
     });
     assert.deepEqual(result.errors, []);
+    assert.equal(result.boardCheckSkipped, true);
+    assert.equal(boardCalled, false);
+  });
+
+  it('passes with mock API and board token', async () => {
+    const result = await validatePrBody({
+      body: VALID_BODY,
+      repo: 'NyumbanApp/nyumban-mobile-app-frontend',
+      githubToken: 'fake',
+      boardCheckToken: 'board-pat',
+      validateLinkedIssueFn: async () => [],
+      validateIssueOnProjectBoardFn: async () => [],
+    });
+    assert.deepEqual(result.errors, []);
+    assert.equal(result.boardCheckSkipped, false);
   });
 });
