@@ -18,7 +18,7 @@ Closes #
 
 ## Checklist
 
-- [ ] Linked issue uses `Closes #N` and issue is on [Nyumban V1 Launch board](https://github.com/orgs/NyumbanApp/projects/3)
+- [ ] Linked issue is on [Nyumban V1 Launch board](https://github.com/orgs/NyumbanApp/projects/3) (project 3)
 - [ ] Acceptance criteria on the issue are addressed
 - [ ] Steps to test above are complete and reproducible
 - [ ] CI passes (or explain why not applicable)

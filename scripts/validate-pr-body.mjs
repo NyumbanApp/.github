@@ -14,9 +14,18 @@ export function shouldSkip({ draft, author, labels }) {
   return { skip: false };
 }
 
+function findClosesIssueMatches(text) {
+  return [...text.matchAll(/\bCloses\s+#(\d+)/gi)];
+}
+
 export function parseClosesIssueNumber(body) {
-  const matches = [...body.matchAll(/\bCloses\s+#(\d+)/gi)];
-  if (matches.length === 0) return { error: 'Missing `Closes #N` (link exactly one board issue)' };
+  const linkedIssueSection = extractSection(body, 'Linked issue').trim();
+  const searchText = linkedIssueSection || body;
+  const matches = findClosesIssueMatches(searchText);
+
+  if (matches.length === 0) {
+    return { error: 'Missing `Closes #N` (link exactly one board issue)' };
+  }
   if (matches.length > 1) {
     return { error: 'Multiple `Closes #N` links found — use exactly one issue per PR' };
   }

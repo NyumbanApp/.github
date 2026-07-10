@@ -23,7 +23,7 @@ Removes IDE tooling from git tracking.
 
 ## Checklist
 
-- [x] Linked issue uses \`Closes #N\` and issue is on Nyumban V1 Launch board
+- [x] Linked issue is on Nyumban V1 Launch board (project 3)
 - [x] Acceptance criteria on the issue are addressed
 - [x] Steps to test above are complete and reproducible
 - [x] CI passes (or explain why not applicable)
@@ -67,12 +67,34 @@ describe('parseClosesIssueNumber', () => {
     assert.deepEqual(parseClosesIssueNumber('Closes #42'), { number: 42 });
   });
 
+  it('parses Closes #N only from Linked issue section', () => {
+    const body = `## Linked issue
+
+Closes #42
+
+## Checklist
+
+- [x] Linked issue uses Closes #99 and issue is on board`;
+    assert.deepEqual(parseClosesIssueNumber(body), { number: 42 });
+  });
+
   it('fails when missing', () => {
     assert.ok(parseClosesIssueNumber('no link').error);
   });
 
-  it('fails on multiple', () => {
-    assert.ok(parseClosesIssueNumber('Closes #1\nCloses #2').error);
+  it('fails when Linked issue section has no Closes link', () => {
+    const body = `## Linked issue
+
+See parent issue.
+
+## Checklist
+
+- [x] Closes #99 in checklist only`;
+    assert.ok(parseClosesIssueNumber(body).error);
+  });
+
+  it('fails on multiple in Linked issue section', () => {
+    assert.ok(parseClosesIssueNumber('## Linked issue\n\nCloses #1\nCloses #2').error);
   });
 });
 
