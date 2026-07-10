@@ -14,7 +14,7 @@ Shared defaults for all [NyumbanApp](https://github.com/NyumbanApp) repositories
 
 Application repos opt in with `.github/workflows/pr-template-check.yml` calling the reusable workflow above (do not duplicate the validator inline).
 
-The reusable workflow requires `projects: read` so `GITHUB_TOKEN` can verify the linked issue is on the org project board via GraphQL `projectItems`.
+Board membership uses GraphQL `projectItems`, which requires a fine-grained PAT with **Organization → Projects: Read**. Store it as org secret `PR_BOARD_CHECK_TOKEN` and pass `BOARD_CHECK_TOKEN` to the validator (falls back to `GITHUB_TOKEN` when unset).
 
 ## Workflow
 

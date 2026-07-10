@@ -11,14 +11,33 @@ on:
     types: [opened, edited, synchronize, reopened, ready_for_review]
     branches: [main]
 
+permissions:
+  pull-requests: read
+  issues: read
+  contents: read
+
 jobs:
   validate:
-    uses: NyumbanApp/.github/.github/workflows/validate-pr-body.yml@main
-    with:
-      pr_body: ${{ github.event.pull_request.body || '' }}
-      pr_draft: ${{ github.event.pull_request.draft }}
-      pr_author: ${{ github.event.pull_request.user.login }}
-      pr_labels_json: ${{ toJSON(github.event.pull_request.labels) }}
+    name: PR template check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout org validator
+        uses: actions/checkout@v4
+        with:
+          repository: NyumbanApp/.github
+          path: org-github
+
+      - name: Run PR body validator
+        env:
+          PR_BODY: ${{ github.event.pull_request.body || '' }}
+          PR_DRAFT: ${{ github.event.pull_request.draft && 'true' || 'false' }}
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+          PR_LABELS: ${{ toJSON(github.event.pull_request.labels) }}
+          REPO: ${{ github.repository }}
+          PROJECT_NUMBER: '3'
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BOARD_CHECK_TOKEN: ${{ secrets.PR_BOARD_CHECK_TOKEN }}
+        run: node org-github/scripts/validate-pr-body.mjs
 '
 
 REPOS=(
@@ -40,8 +59,8 @@ for repo in "${REPOS[@]}"; do
   echo "=== $repo ==="
   existing=""
   if existing=$(gh api "repos/NyumbanApp/$repo/contents/.github/workflows/pr-template-check.yml" --jq .content 2>/dev/null | base64 -d); then
-    if echo "$existing" | grep -q 'uses: NyumbanApp/.github/.github/workflows/validate-pr-body.yml@main'; then
-      echo "Already using org reusable workflow — skipping"
+    if echo "$existing" | grep -q 'node org-github/scripts/validate-pr-body.mjs'; then
+      echo "Already using org inline validator caller — skipping"
       continue
     fi
     echo "Inline workflow found — will replace with org caller"

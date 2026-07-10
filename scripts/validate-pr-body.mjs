@@ -220,7 +220,7 @@ export async function main() {
   const labels = labelsRaw.map((label) => (typeof label === 'string' ? label : label.name));
   const repo = process.env.REPO ?? '';
   const projectNumber = Number.parseInt(process.env.PROJECT_NUMBER ?? '3', 10);
-  const token = process.env.GITHUB_TOKEN ?? '';
+  const token = process.env.BOARD_CHECK_TOKEN || process.env.GITHUB_TOKEN || '';
 
   const result = await validatePrBody({
     body,
