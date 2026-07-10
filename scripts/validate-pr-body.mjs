@@ -91,7 +91,7 @@ export function validateStructure(body) {
   return errors;
 }
 
-export async function validateIssueOnBoard({ token, owner, repo, issueNumber, projectNumber }) {
+export async function validateLinkedIssue({ token, owner, repo, issueNumber }) {
   const errors = [];
   const headers = {
     Authorization: `Bearer ${token}`,
@@ -117,6 +117,23 @@ export async function validateIssueOnBoard({ token, owner, repo, issueNumber, pr
   if (issue.state !== 'open') {
     errors.push(`Issue #${issueNumber} is ${issue.state} — link an open issue`);
   }
+
+  return errors;
+}
+
+export async function validateIssueOnProjectBoard({
+  token,
+  owner,
+  repo,
+  issueNumber,
+  projectNumber,
+}) {
+  const errors = [];
+  const headers = {
+    Authorization: `Bearer ${token}`,
+    Accept: 'application/vnd.github+json',
+    'X-GitHub-Api-Version': '2022-11-28',
+  };
 
   const query = `
     query($owner: String!, $repo: String!, $number: Int!) {
@@ -161,6 +178,13 @@ export async function validateIssueOnBoard({ token, owner, repo, issueNumber, pr
   return errors;
 }
 
+/** @deprecated Use validateLinkedIssue + validateIssueOnProjectBoard */
+export async function validateIssueOnBoard({ token, owner, repo, issueNumber, projectNumber }) {
+  const errors = await validateLinkedIssue({ token, owner, repo, issueNumber });
+  if (errors.length > 0) return errors;
+  return validateIssueOnProjectBoard({ token, owner, repo, issueNumber, projectNumber });
+}
+
 export async function validatePrBody({
   body,
   draft = false,
@@ -168,12 +192,15 @@ export async function validatePrBody({
   labels = [],
   repo = '',
   projectNumber = 3,
-  token = '',
-  fetchIssue = validateIssueOnBoard,
+  githubToken = '',
+  boardCheckToken = '',
+  validateLinkedIssueFn = validateLinkedIssue,
+  validateIssueOnProjectBoardFn = validateIssueOnProjectBoard,
+  onBoardCheckSkipped = () => {},
 }) {
   const skip = shouldSkip({ draft, author, labels });
   if (skip.skip) {
-    return { skipped: true, reason: skip.reason, errors: [] };
+    return { skipped: true, reason: skip.reason, errors: [], boardCheckSkipped: false };
   }
 
   const errors = [];
@@ -181,26 +208,39 @@ export async function validatePrBody({
 
   if (closes.error) {
     errors.push(closes.error);
-    return { skipped: false, errors };
+    return { skipped: false, errors, boardCheckSkipped: false };
   }
 
   errors.push(...validateStructure(body));
 
-  if (repo && token) {
-    const [owner, repoName] = repo.split('/');
-    if (owner && repoName) {
-      const issueErrors = await fetchIssue({
-        token,
-        owner,
-        repo: repoName,
-        issueNumber: closes.number,
-        projectNumber,
-      });
-      errors.push(...issueErrors);
-    }
+  let boardCheckSkipped = false;
+  const [owner, repoName] = repo.split('/');
+
+  if (owner && repoName && githubToken) {
+    const linkedErrors = await validateLinkedIssueFn({
+      token: githubToken,
+      owner,
+      repo: repoName,
+      issueNumber: closes.number,
+    });
+    errors.push(...linkedErrors);
   }
 
-  return { skipped: false, errors };
+  if (owner && repoName && boardCheckToken) {
+    const boardErrors = await validateIssueOnProjectBoardFn({
+      token: boardCheckToken,
+      owner,
+      repo: repoName,
+      issueNumber: closes.number,
+      projectNumber,
+    });
+    errors.push(...boardErrors);
+  } else if (owner && repoName) {
+    boardCheckSkipped = true;
+    onBoardCheckSkipped();
+  }
+
+  return { skipped: false, errors, boardCheckSkipped };
 }
 
 function failWithErrors(errors) {
@@ -220,7 +260,8 @@ export async function main() {
   const labels = labelsRaw.map((label) => (typeof label === 'string' ? label : label.name));
   const repo = process.env.REPO ?? '';
   const projectNumber = Number.parseInt(process.env.PROJECT_NUMBER ?? '3', 10);
-  const token = process.env.BOARD_CHECK_TOKEN || process.env.GITHUB_TOKEN || '';
+  const githubToken = process.env.GITHUB_TOKEN ?? '';
+  const boardCheckToken = (process.env.BOARD_CHECK_TOKEN ?? '').trim();
 
   const result = await validatePrBody({
     body,
@@ -229,7 +270,13 @@ export async function main() {
     labels,
     repo,
     projectNumber,
-    token,
+    githubToken,
+    boardCheckToken,
+    onBoardCheckSkipped: () => {
+      console.log(
+        'Board check skipped (PR_BOARD_CHECK_TOKEN not configured — lead verifies project board manually)',
+      );
+    },
   });
 
   if (result.skipped) {
@@ -241,7 +288,11 @@ export async function main() {
     failWithErrors(result.errors);
   }
 
-  console.log('PR template check passed');
+  if (result.boardCheckSkipped) {
+    console.log('PR template check passed (board membership not verified in CI)');
+  } else {
+    console.log('PR template check passed');
+  }
   process.exit(0);
 }
 
