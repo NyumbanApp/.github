@@ -100,5 +100,5 @@ We introduce automation only after the team has practiced this contract manually
 |-----------|----------|
 | One sole-assignee task In Progress per board | Focus and predictable delivery |
 | Collaborative issues exempt | Pair work without artificial blocking |
-| Per-board limits | Parallel work across Mobile, Admin, and WebApp |
+| Per-board limits | Parallel work across Board A, Board B, and Board C etc. |
 | Manual first, automate later | Continuous improvement without unnecessary friction |
