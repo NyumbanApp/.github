@@ -29,10 +29,6 @@ Shared backend: Node.js, Express, Prisma, PostgreSQL — deployed on **AWS** (EC
 
 This organization uses shared GitHub defaults in our public [`.github`](https://github.com/NyumbanApp/.github) repo:
 
-- PR templates and validation  
-- Issue → branch → PR (`Closes #N`) → review → merge  
-- Project board tracking for delivery  
-
 Application repositories are private. Contributors should follow the workflow documented in each repo’s `docs/process/github-workflow.md`.
 
 ## Contact
