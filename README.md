@@ -18,7 +18,7 @@ Application repos opt in with `.github/workflows/pr-template-check.yml` that che
 
 | Phase | Secret | Board CI |
 |-------|--------|----------|
-| **1 — Free, no PAT** | None | Skipped (lead confirms issue on [project 3](https://github.com/orgs/NyumbanApp/projects/3)) |
+| **1 — Free, no PAT** | None | Skipped (lead confirms issue on [project 3](https://github.com/orgs/NyumbanApp/projects)) |
 | **2 — Free + repo secrets** | `PR_BOARD_CHECK_TOKEN` per app repo | Strict GraphQL board check |
 | **3 — GitHub Team** | Org `PR_BOARD_CHECK_TOKEN` | Strict (delete per-repo copies) |
 
