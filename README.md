@@ -8,6 +8,7 @@ Shared defaults for all [NyumbanApp](https://github.com/NyumbanApp) repositories
 
 | Path | Purpose |
 |------|---------|
+| [`docs/contracts/in-progress-contract.md`](./docs/contracts/in-progress-contract.md) | WIP limit: one solo In Progress per dev per board |
 | [`pull_request_template.md`](./pull_request_template.md) | Default PR description for new pull requests |
 | [`.github/workflows/validate-pr-body.yml`](./.github/workflows/validate-pr-body.yml) | Reusable workflow: PR template check |
 | [`scripts/validate-pr-body.mjs`](./scripts/validate-pr-body.mjs) | Validation logic |
