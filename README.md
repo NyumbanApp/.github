@@ -9,6 +9,8 @@ Shared defaults for all [NyumbanApp](https://github.com/NyumbanApp) repositories
 | Path | Purpose |
 |------|---------|
 | [`docs/contracts/in-progress-contract.md`](./docs/contracts/in-progress-contract.md) | WIP limit: one solo In Progress per dev per board |
+| [`docs/contracts/branch-naming-contract.md`](./docs/contracts/branch-naming-contract.md) | Branch format: `type/issue#-slug` (CI enforced) |
+| [`scripts/create-branch.sh`](./scripts/create-branch.sh) | Create a contract-compliant branch from an issue |
 | [`pull_request_template.md`](./pull_request_template.md) | Default PR description for new pull requests |
 | [`.github/workflows/validate-pr-body.yml`](./.github/workflows/validate-pr-body.yml) | Reusable workflow: PR template check |
 | [`scripts/validate-pr-body.mjs`](./scripts/validate-pr-body.mjs) | Validation logic |

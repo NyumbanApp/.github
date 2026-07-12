@@ -32,7 +32,7 @@ This organization uses shared GitHub defaults in our public [`.github`](https://
 - PR templates and validation  
 - Issue → branch → PR (`Closes #N`) → review → merge  
 - Project board tracking for delivery  
-- Delivery contracts (WIP limits, etc.) in [`docs/contracts/`](https://github.com/NyumbanApp/.github/tree/main/docs/contracts)  
+- Delivery contracts (WIP limits, branch naming, etc.) in [`docs/contracts/`](https://github.com/NyumbanApp/.github/tree/main/docs/contracts)  
 
 Application repositories are private. Contributors should follow the workflow documented in each repo’s `docs/process/github-workflow.md`.
 

@@ -3,9 +3,12 @@ import { describe, it } from 'node:test';
 import {
   parseClosesIssueNumber,
   shouldSkip,
+  validateBranchName,
   validatePrBody,
   validateStructure,
 } from './validate-pr-body.mjs';
+
+const VALID_HEAD_REF = 'task/153-removes-ide-tooling-from-git';
 
 const VALID_BODY = `## Linked issue
 
@@ -125,6 +128,26 @@ describe('validateStructure', () => {
   });
 });
 
+describe('validateBranchName', () => {
+  it('accepts valid branch matching issue', () => {
+    assert.deepEqual(validateBranchName('feature/168-commercial-unit-floor-area', 168), []);
+  });
+
+  it('rejects invalid prefix', () => {
+    assert.ok(validateBranchName('fix/168-login', 168).some((e) => e.includes('must match')));
+  });
+
+  it('rejects issue number mismatch', () => {
+    assert.ok(
+      validateBranchName('bug/168-login', 99).some((e) => e.includes('must match Closes #99')),
+    );
+  });
+
+  it('rejects missing slug segment', () => {
+    assert.ok(validateBranchName('feature/168', 168).length > 0);
+  });
+});
+
 describe('validatePrBody', () => {
   it('skips draft without API', async () => {
     const result = await validatePrBody({ body: '', draft: true });
@@ -134,6 +157,7 @@ describe('validatePrBody', () => {
   it('fails closed issue via mock', async () => {
     const result = await validatePrBody({
       body: VALID_BODY,
+      headRef: VALID_HEAD_REF,
       repo: 'NyumbanApp/nyumban-mobile-app-frontend',
       githubToken: 'fake',
       validateLinkedIssueFn: async () => [`Issue #153 is closed — link an open issue`],
@@ -144,6 +168,7 @@ describe('validatePrBody', () => {
   it('fails issue not on board when board token configured', async () => {
     const result = await validatePrBody({
       body: VALID_BODY,
+      headRef: VALID_HEAD_REF,
       repo: 'NyumbanApp/nyumban-mobile-app-frontend',
       githubToken: 'fake',
       boardCheckToken: 'board-pat',
@@ -159,6 +184,7 @@ describe('validatePrBody', () => {
     let boardCalled = false;
     const result = await validatePrBody({
       body: VALID_BODY,
+      headRef: VALID_HEAD_REF,
       repo: 'NyumbanApp/nyumban-mobile-app-frontend',
       githubToken: 'fake',
       validateLinkedIssueFn: async () => [],
@@ -176,6 +202,7 @@ describe('validatePrBody', () => {
   it('passes with mock API and board token', async () => {
     const result = await validatePrBody({
       body: VALID_BODY,
+      headRef: VALID_HEAD_REF,
       repo: 'NyumbanApp/nyumban-mobile-app-frontend',
       githubToken: 'fake',
       boardCheckToken: 'board-pat',
@@ -184,5 +211,16 @@ describe('validatePrBody', () => {
     });
     assert.deepEqual(result.errors, []);
     assert.equal(result.boardCheckSkipped, false);
+  });
+
+  it('fails invalid branch name', async () => {
+    const result = await validatePrBody({
+      body: VALID_BODY,
+      headRef: 'fix/old-branch-name',
+      repo: 'NyumbanApp/nyumban-mobile-app-frontend',
+      githubToken: 'fake',
+      validateLinkedIssueFn: async () => [],
+    });
+    assert.ok(result.errors.some((e) => e.includes('Branch Naming Contract')));
   });
 });
