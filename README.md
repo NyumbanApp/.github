@@ -9,11 +9,19 @@ Shared defaults for all [NyumbanApp](https://github.com/NyumbanApp) repositories
 | Path | Purpose |
 |------|---------|
 | [`docs/contracts/in-progress-contract.md`](./docs/contracts/in-progress-contract.md) | WIP limit: one solo In Progress per dev per board |
+| [`docs/contracts/definition-of-done-contract.md`](./docs/contracts/definition-of-done-contract.md) | Defines when work is complete and may move to **Done** |
 | [`pull_request_template.md`](./pull_request_template.md) | Default PR description for new pull requests |
 | [`.github/workflows/validate-pr-body.yml`](./.github/workflows/validate-pr-body.yml) | Reusable workflow: PR template check |
 | [`scripts/validate-pr-body.mjs`](./scripts/validate-pr-body.mjs) | Validation logic |
 
 Application repos opt in with `.github/workflows/pr-template-check.yml` that checks out this validator (do not duplicate validation logic inline).
+
+## Delivery Contracts
+
+The following organisation-wide contracts define the engineering standards used across all NyumbanApp repositories.
+
+- [In Progress Contract](./docs/contracts/in-progress-contract.md)
+- [Definition of Done Contract](./docs/contracts/definition-of-done-contract.md)
 
 ### Board check (phased)
 
