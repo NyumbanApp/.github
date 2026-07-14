@@ -26,6 +26,11 @@ on:
         description: JSON array of PR label objects
         type: string
         default: '[]'
+      pr_head_ref:
+        description: Pull request head branch name
+        type: string
+        required: false
+        default: ''
     secrets:
       PR_BOARD_CHECK_TOKEN:
         description: Optional fine-grained PAT with org Projects read for board verification
@@ -53,6 +58,7 @@ jobs:
           PR_DRAFT: ${{ inputs.pr_draft }}
           PR_AUTHOR: ${{ inputs.pr_author }}
           PR_LABELS: ${{ inputs.pr_labels_json }}
+          PR_HEAD_REF: ${{ inputs.pr_head_ref }}
           REPO: ${{ github.repository }}
           PROJECT_NUMBER: ${{ inputs.project_number }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

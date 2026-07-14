@@ -19,6 +19,7 @@ Closes #
 ## Checklist
 
 - [ ] Linked issue is on [Nyumban V1 Launch board](https://github.com/orgs/NyumbanApp/projects/3) (project 3)
+- [ ] Branch name follows the [Branch Naming Contract](https://github.com/NyumbanApp/.github/blob/main/docs/contracts/branch-naming-contract.md)
 - [ ] Acceptance criteria on the issue are addressed
 - [ ] Steps to test above are complete and reproducible
 - [ ] CI passes (or explain why not applicable)

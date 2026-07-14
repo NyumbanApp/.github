@@ -3,6 +3,32 @@ import { fileURLToPath } from 'node:url';
 const SKIP_AUTHORS = new Set(['dependabot[bot]', 'renovate[bot]']);
 const REQUIRED_HEADINGS = ['## Summary', '## Steps to test', '## Checklist'];
 const MIN_CHECKLIST_ITEMS = 6;
+const BRANCH_PATTERN = /^(feature|bug|task)\/(\d+)-[a-z0-9]+(-[a-z0-9]+)*$/;
+
+export function validateBranchName(headRef, closesIssueNumber) {
+  const errors = [];
+  if (!headRef?.trim()) {
+    errors.push('Missing PR head branch');
+    return errors;
+  }
+
+  const match = headRef.match(BRANCH_PATTERN);
+  if (!match) {
+    errors.push(
+      `Branch "${headRef}" must match feature|bug|task/<issue#>-<slug> (see Branch Naming Contract)`,
+    );
+    return errors;
+  }
+
+  const branchIssueNumber = Number.parseInt(match[2], 10);
+  if (closesIssueNumber && branchIssueNumber !== closesIssueNumber) {
+    errors.push(
+      `Branch issue #${branchIssueNumber} must match Closes #${closesIssueNumber}`,
+    );
+  }
+
+  return errors;
+}
 
 export function shouldSkip({ draft, author, labels }) {
   if (draft) return { skip: true, reason: 'draft PR' };
@@ -190,6 +216,7 @@ export async function validatePrBody({
   draft = false,
   author = '',
   labels = [],
+  headRef = '',
   repo = '',
   projectNumber = 3,
   githubToken = '',
@@ -211,6 +238,7 @@ export async function validatePrBody({
     return { skipped: false, errors, boardCheckSkipped: false };
   }
 
+  errors.push(...validateBranchName(headRef, closes.number));
   errors.push(...validateStructure(body));
 
   let boardCheckSkipped = false;
@@ -258,6 +286,7 @@ export async function main() {
   const author = process.env.PR_AUTHOR ?? '';
   const labelsRaw = JSON.parse(process.env.PR_LABELS ?? '[]');
   const labels = labelsRaw.map((label) => (typeof label === 'string' ? label : label.name));
+  const headRef = process.env.PR_HEAD_REF ?? '';
   const repo = process.env.REPO ?? '';
   const projectNumber = Number.parseInt(process.env.PROJECT_NUMBER ?? '3', 10);
   const githubToken = process.env.GITHUB_TOKEN ?? '';
@@ -268,6 +297,7 @@ export async function main() {
     draft,
     author,
     labels,
+    headRef,
     repo,
     projectNumber,
     githubToken,
