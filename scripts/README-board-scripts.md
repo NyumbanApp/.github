@@ -32,7 +32,7 @@ gh auth refresh -s project,read:org
 | [`board-create-issue.sh`](./board-create-issue.sh) | Create issue + type/priority/area + add to board |
 | [`boards/`](./boards/) | Per-board IDs (sourced — do not run directly) |
 
-These scripts do **not** enforce the [In Progress](../docs/contracts/in-progress-contract.md) or [Definition of Done](../docs/contracts/definition-of-done-contract.md) contracts — follow those manually.
+These scripts do **not** enforce the [In Progress](https://github.com/NyumbanApp/.github/blob/main/docs/contracts/in-progress-contract.md) or [Definition of Done](https://github.com/NyumbanApp/.github/blob/main/docs/contracts/definition-of-done-contract.md) contracts — follow those manually.
 
 ## Examples
 
