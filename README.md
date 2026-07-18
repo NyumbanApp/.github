@@ -12,6 +12,11 @@ Shared defaults for all [NyumbanApp](https://github.com/NyumbanApp) repositories
 | [`docs/contracts/definition-of-done-contract.md`](./docs/contracts/definition-of-done-contract.md) | Defines when work is complete and may move to **Done** |
 | [`docs/contracts/branch-naming-contract.md`](./docs/contracts/branch-naming-contract.md) | Branch format: `type/issue#-slug` (CI enforced) |
 | [`scripts/create-branch.sh`](./scripts/create-branch.sh) | Create a contract-compliant branch from an issue |
+| [`scripts/board-list.sh`](./scripts/board-list.sh) | List cards on Mobile / Admin / WebApp boards |
+| [`scripts/board-move-status.sh`](./scripts/board-move-status.sh) | Move an issue’s board status from the terminal |
+| [`scripts/board-create-issue.sh`](./scripts/board-create-issue.sh) | Create issue + add to board + set type/priority/area |
+| [`scripts/boards/`](./scripts/boards/) | Per-board project field IDs (`mobile`, `admin`, `webapp`) |
+| [`scripts/README-board-scripts.md`](./scripts/README-board-scripts.md) | Board CLI setup and usage |
 | [`pull_request_template.md`](./pull_request_template.md) | Default PR description for new pull requests |
 | [`.github/workflows/validate-pr-body.yml`](./.github/workflows/validate-pr-body.yml) | Reusable workflow: PR template check |
 | [`scripts/validate-pr-body.mjs`](./scripts/validate-pr-body.mjs) | Validation logic |
@@ -36,6 +41,21 @@ The following organisation-wide contracts define the engineering standards used 
 Board membership uses GraphQL `projectItems`, which requires a fine-grained PAT with **Organization → Projects: Read**. Store as repository secret `PR_BOARD_CHECK_TOKEN` on Free (org secrets do not apply to private repos on Free). Pass via workflow env `BOARD_CHECK_TOKEN`.
 
 Linked issue existence/open state always uses `GITHUB_TOKEN` (no PAT required).
+
+## Board CLI
+
+Update board status without opening GitHub. Boards: `mobile` (#3), `admin` (#4), `webapp` (#5). Statuses: Backlog → Todo → In Progress → In Review → Done (no QA yet).
+
+```bash
+git clone https://github.com/NyumbanApp/.github.git && cd .github
+chmod +x scripts/board-*.sh
+gh auth refresh -s project,read:org
+
+./scripts/board-list.sh --board webapp
+./scripts/board-move-status.sh --board webapp --repo NyumbanApp/nyumban-web-app-frontend --issue 12 --status "In Progress"
+```
+
+Full guide: [`scripts/README-board-scripts.md`](./scripts/README-board-scripts.md).
 
 ## Workflow
 
