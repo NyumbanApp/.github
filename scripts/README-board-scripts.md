@@ -28,11 +28,43 @@ gh auth refresh -s project,read:org
 | Script | Purpose |
 |--------|---------|
 | [`board-list.sh`](./board-list.sh) | Print board cards (optional `--status` filter) |
-| [`board-move-status.sh`](./board-move-status.sh) | Move an issue’s card by status |
-| [`board-create-issue.sh`](./board-create-issue.sh) | Create issue + type/priority/area + add to board |
+| [`board-move-status.sh`](./board-move-status.sh) | Move an issue’s board status from the terminal |
+| [`board-create-issue.sh`](./board-create-issue.sh) | Create issue + type/priority/area + labels + add to board |
 | [`boards/`](./boards/) | Per-board IDs (sourced — do not run directly) |
 
 These scripts do **not** enforce the [In Progress](https://github.com/NyumbanApp/.github/blob/main/docs/contracts/in-progress-contract.md) or [Definition of Done](https://github.com/NyumbanApp/.github/blob/main/docs/contracts/definition-of-done-contract.md) contracts — follow those manually.
+
+## `board-create-issue.sh` — required flags
+
+| Flag | Required | Values |
+|------|----------|--------|
+| `--board` | Yes | `mobile` \| `admin` \| `webapp` |
+| `--type` | Yes | `Bug` \| `Feature` \| `Task` |
+| `--area` | Yes | See per-board areas below |
+| `--priority` | Yes | `Low` \| `Medium` \| `High` \| `Urgent` |
+| `--assignee` | Yes | GitHub handle |
+| `--title` | Yes | Prefer `Type \| Area \| Summary` |
+| `--repo` | No | `owner/name` (default: current `gh` repo) |
+| `--status` | No | Default `Backlog` |
+| `--body` / `--body-file` | No | Default short context stub |
+
+### Areas by board
+
+| Board | `--area` values |
+|-------|-----------------|
+| `mobile` | `Mobile`, `Backend`, `AWS`, `Docs`, `Process` |
+| `admin` | `Admin Frontend`, `Admin Backend`, `Docs`, `Process` |
+| `webapp` | `Web Frontend`, `Backend`, `Docs`, `Process` |
+
+### Labels (automatic)
+
+The script applies labels after create (creates them on the repo if missing):
+
+- Type → `type/bug` \| `type/feature` \| `type/task` (if type cannot be mapped → **`enhancement`**)
+- Area → `area/…` (kebab, board-specific)
+- Priority → `priority/P0-critical` \| `P1-high` \| `P2-medium` \| `P3-low`
+
+Do not hand-manage competing `type/*` / `area/*` / `priority/*` labels — use the CLI.
 
 ## Examples
 

@@ -67,6 +67,49 @@ type_id_for() {
   esac
 }
 
+normalize_priority() {
+  case "$(echo "$1" | tr '[:upper:]' '[:lower:]')" in
+    low) echo "Low" ;;
+    medium) echo "Medium" ;;
+    high) echo "High" ;;
+    urgent) echo "Urgent" ;;
+    *)
+      echo "Unknown priority: $1 (Low|Medium|High|Urgent)" >&2
+      return 1
+      ;;
+  esac
+}
+
+type_label_for() {
+  case "$(echo "$1" | tr '[:upper:]' '[:lower:]')" in
+    bug) echo "type/bug" ;;
+    feature) echo "type/feature" ;;
+    task) echo "type/task" ;;
+    *) return 1 ;;
+  esac
+}
+
+area_label_for() {
+  case "$1" in
+    Mobile) echo "area/mobile" ;;
+    Backend) echo "area/backend" ;;
+    AWS) echo "area/aws" ;;
+    Process) echo "area/process" ;;
+    Docs) echo "area/docs" ;;
+    *) echo "Unknown area label for mobile board: $1" >&2; return 1 ;;
+  esac
+}
+
+priority_label_for() {
+  case "$(normalize_priority "$1")" in
+    Urgent) echo "priority/P0-critical" ;;
+    High) echo "priority/P1-high" ;;
+    Medium) echo "priority/P2-medium" ;;
+    Low) echo "priority/P3-low" ;;
+    *) return 1 ;;
+  esac
+}
+
 repo_short_name() {
   local r="$1"
   r="${r#NyumbanApp/}"
