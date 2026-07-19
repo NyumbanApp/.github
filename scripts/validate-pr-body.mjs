@@ -44,9 +44,21 @@ function findClosesIssueMatches(text) {
   return [...text.matchAll(/\bCloses\s+#(\d+)/gi)];
 }
 
+/** Normalize GitHub PR bodies that use Windows CRLF so heading matching works. */
+export function normalizePrBody(body) {
+  return String(body ?? '')
+    .replace(/\r\n/g, '\n')
+    .replace(/\r/g, '\n');
+}
+
+function isOptionalChecklistItem(line) {
+  return /CI passes/i.test(line);
+}
+
 export function parseClosesIssueNumber(body) {
-  const linkedIssueSection = extractSection(body, 'Linked issue').trim();
-  const searchText = linkedIssueSection || body;
+  const normalized = normalizePrBody(body);
+  const linkedIssueSection = extractSection(normalized, 'Linked issue').trim();
+  const searchText = linkedIssueSection || normalized;
   const matches = findClosesIssueMatches(searchText);
 
   if (matches.length === 0) {
@@ -59,13 +71,14 @@ export function parseClosesIssueNumber(body) {
 }
 
 export function extractSection(body, heading) {
+  const normalized = normalizePrBody(body);
   const target = `## ${heading}`.toLowerCase();
-  const lines = body.split('\n');
+  const lines = normalized.split('\n');
   let inSection = false;
   const collected = [];
 
   for (const line of lines) {
-    const lower = line.toLowerCase();
+    const lower = line.replace(/\r$/, '').toLowerCase();
     if (lower.startsWith('## ') && lower !== target) {
       if (inSection) break;
       continue;
@@ -86,15 +99,16 @@ export function stripHtmlComments(text) {
 
 export function validateStructure(body) {
   const errors = [];
+  const normalized = normalizePrBody(body);
 
   for (const heading of REQUIRED_HEADINGS) {
-    if (!body.includes(heading)) errors.push(`Missing section: ${heading}`);
+    if (!normalized.includes(heading)) errors.push(`Missing section: ${heading}`);
   }
 
-  const summary = stripHtmlComments(extractSection(body, 'Summary'));
+  const summary = stripHtmlComments(extractSection(normalized, 'Summary'));
   if (!summary) errors.push('Summary is empty');
 
-  const stepsSection = extractSection(body, 'Steps to test');
+  const stepsSection = extractSection(normalized, 'Steps to test');
   const firstStepLine = stepsSection
     .split('\n')
     .map((line) => line.trim())
@@ -103,9 +117,15 @@ export function validateStructure(body) {
     errors.push('Steps to test: add at least one filled numbered step (e.g. `1. ...`)');
   }
 
-  const checklistPart = extractSection(body, 'Checklist');
-  const unchecked = (checklistPart.match(/- \[ \]/g) || []).length;
-  const checked = (checklistPart.match(/- \[x\]/gi) || []).length;
+  const checklistPart = extractSection(normalized, 'Checklist');
+  let unchecked = 0;
+  let checked = 0;
+  for (const rawLine of checklistPart.split('\n')) {
+    const line = rawLine.trim();
+    if (isOptionalChecklistItem(line)) continue;
+    if (/^- \[ \]/.test(line)) unchecked += 1;
+    else if (/^- \[x\]/i.test(line)) checked += 1;
+  }
 
   if (unchecked > 0) {
     errors.push(`Checklist: ${unchecked} item(s) still unchecked`);
@@ -231,7 +251,8 @@ export async function validatePrBody({
   }
 
   const errors = [];
-  const closes = parseClosesIssueNumber(body ?? '');
+  const normalizedBody = normalizePrBody(body ?? '');
+  const closes = parseClosesIssueNumber(normalizedBody);
 
   if (closes.error) {
     errors.push(closes.error);
@@ -239,7 +260,7 @@ export async function validatePrBody({
   }
 
   errors.push(...validateBranchName(headRef, closes.number));
-  errors.push(...validateStructure(body));
+  errors.push(...validateStructure(normalizedBody));
 
   let boardCheckSkipped = false;
   const [owner, repoName] = repo.split('/');

@@ -27,6 +27,7 @@ Removes IDE tooling from git tracking.
 ## Checklist
 
 - [x] Linked issue is on Nyumban V1 Launch board (project 3)
+- [x] Branch name follows the Branch Naming Contract
 - [x] Acceptance criteria on the issue are addressed
 - [x] Steps to test above are complete and reproducible
 - [x] CI passes (or explain why not applicable)
@@ -37,6 +38,11 @@ Removes IDE tooling from git tracking.
 
 None.
 `;
+
+const CRLF_BODY = VALID_BODY.replace(/\n/g, '\r\n').replace(
+  '- [x] CI passes (or explain why not applicable)\r\n',
+  '- [ ] CI passes (or explain why not applicable)\r\n',
+);
 
 describe('shouldSkip', () => {
   it('skips draft PRs', () => {
@@ -106,8 +112,20 @@ describe('validateStructure', () => {
     assert.deepEqual(validateStructure(VALID_BODY), []);
   });
 
+  it('passes CRLF body with optional CI unchecked', () => {
+    assert.deepEqual(validateStructure(CRLF_BODY), []);
+  });
+
   it('fails empty summary', () => {
     const body = VALID_BODY.replace('## Summary\n\nRemoves IDE tooling from git tracking.', '## Summary\n\n');
+    assert.ok(validateStructure(body).some((e) => e.includes('Summary is empty')));
+  });
+
+  it('fails empty summary even with CRLF', () => {
+    const body = VALID_BODY.replace(
+      '## Summary\n\nRemoves IDE tooling from git tracking.',
+      '## Summary\n\n',
+    ).replace(/\n/g, '\r\n');
     assert.ok(validateStructure(body).some((e) => e.includes('Summary is empty')));
   });
 
@@ -121,10 +139,18 @@ describe('validateStructure', () => {
     );
   });
 
-  it('fails unchecked checklist', () => {
+  it('fails unchecked required checklist item', () => {
     const body = VALID_BODY.replace('- [x] Linked issue', '- [ ] Linked issue');
     const errors = validateStructure(body);
     assert.ok(errors.some((e) => e.includes('unchecked')));
+  });
+
+  it('allows unchecked CI passes item', () => {
+    const body = VALID_BODY.replace(
+      '- [x] CI passes (or explain why not applicable)',
+      '- [ ] CI passes (or explain why not applicable)',
+    );
+    assert.deepEqual(validateStructure(body), []);
   });
 });
 
