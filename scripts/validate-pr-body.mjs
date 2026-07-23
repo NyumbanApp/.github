@@ -217,7 +217,7 @@ export async function validateIssueOnProjectBoard({
   const onProject = items.some((node) => node.project?.number === projectNumber);
   if (!onProject) {
     errors.push(
-      `Issue #${issueNumber} is not on Project #${projectNumber} (Nyumban V1 Launch board)`,
+      `Issue #${issueNumber} is not on Project #${projectNumber}`,
     );
   }
 

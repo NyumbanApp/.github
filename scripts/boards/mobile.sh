@@ -16,6 +16,7 @@ export STATUS_BACKLOG="1887eddb"
 export STATUS_TODO="f75ad846"
 export STATUS_IN_PROGRESS="47fc9ee4"
 export STATUS_IN_REVIEW="b1c1f4c4"
+export STATUS_QA="37fec98c"
 export STATUS_DONE="98236657"
 
 export AREA_MOBILE="3b34bd6d"
@@ -35,13 +36,10 @@ status_option_id() {
     todo) echo "$STATUS_TODO" ;;
     "in progress"|in-progress) echo "$STATUS_IN_PROGRESS" ;;
     "in review"|in-review) echo "$STATUS_IN_REVIEW" ;;
+    qa) echo "$STATUS_QA" ;;
     done) echo "$STATUS_DONE" ;;
-    qa)
-      echo "Status QA is not configured yet (column not on boards). Use: Backlog|Todo|In Progress|In Review|Done" >&2
-      return 1
-      ;;
     *)
-      echo "Unknown status: $1 (Backlog|Todo|In Progress|In Review|Done)" >&2
+      echo "Unknown status: $1 (Backlog|Todo|In Progress|In Review|QA|Done)" >&2
       return 1
       ;;
   esac

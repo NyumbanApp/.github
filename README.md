@@ -44,7 +44,7 @@ Linked issue existence/open state always uses `GITHUB_TOKEN` (no PAT required).
 
 ## Board CLI
 
-Update board status without opening GitHub. Boards: `mobile` (#3), `admin` (#4), `webapp` (#5). Statuses: Backlog → Todo → In Progress → In Review → Done (no QA yet).
+Update board status without opening GitHub. Boards: `mobile` (#3), `admin` (#4), `webapp` (#5). Statuses: Backlog → Todo → In Progress → In Review → QA → Done.
 
 ```bash
 git clone https://github.com/NyumbanApp/.github.git && cd .github
@@ -59,7 +59,11 @@ Full guide: [`scripts/README-board-scripts.md`](./scripts/README-board-scripts.m
 
 ## Workflow
 
-Issue → branch → PR (`Closes #N`) → review → merge. Details: [github-workflow.md](https://github.com/NyumbanApp/nyumban-mobile-app-frontend/blob/main/docs/process/github-workflow.md).
+Issue → branch → PR (`Closes #N`) → review → merge → **QA** → **Done**.
+
+After merge, the card lands in **QA** (not Done). Lead/QA verifies acceptance criteria, then moves to Done. Docs/process chores may skip QA with a short issue comment (`QA skip: docs-only`). Developers do not self-move to Done after merge.
+
+Details: [github-workflow.md](https://github.com/NyumbanApp/nyumban-mobile-app-frontend/blob/main/docs/process/github-workflow.md).
 
 ## Development
 

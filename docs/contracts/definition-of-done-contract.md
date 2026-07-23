@@ -20,14 +20,20 @@ Moving an issue to **Done** signals that the agreed scope has been fully deliver
 
 An issue may only be moved to **Done** when all applicable completion requirements have been satisfied.
 
+**Merge alone is not Done.** After a PR merges, the card moves to **QA**. Moving to **Done** requires a QA pass (Lead or designated QA) **or** a documented QA skip on the issue (for example `QA skip: docs-only` for docs, process, or pure chore/config). User-facing / product work must go through QA.
+
 At minimum:
 
 - The agreed acceptance criteria have been completed.
-- Quality Assurance (QA) has passed where applicable.
+- Quality Assurance (QA) has passed, **or** a documented QA skip is on the issue where skip is allowed.
 - Any required Pull Request has been approved and merged where applicable.
 - Required documentation has been updated where applicable.
 - The completed work is ready for its intended outcome, such as publishing, release, deployment, operational use, implementation or handover.
-  
+
+Pipeline order: `Backlog → Todo → In Progress → In Review → QA → Done`.
+
+On QA fail: move back to **In Progress** with an issue comment describing what failed; open a follow-up fix PR as needed. Developers do not self-move to **Done** after merge.
+
 ---
 
 ## Definition of Done
@@ -51,7 +57,7 @@ Depending on the task, this may include:
 | Requirement | Required? |
 |-----------|-------------|
 | Acceptance criteria completed | Yes |
-| QA passed (where applicable) | Yes |
+| QA passed, or documented QA skip (docs/process/chore only) | Yes |
 | Pull Request merged (where applicable) | Yes |
 | Required documentation updated | Where applicable |
 | Required approvals obtained | Where applicable |
@@ -65,13 +71,13 @@ Depending on the task, this may include:
 Move an issue to **Done** only when you have:
 
 1. Completed the agreed scope of work.
-2. Confirmed that all applicable quality checks have passed.
-3. Merged the approved Pull Request where applicable.
+2. Merged the approved Pull Request where applicable (card should be in **QA** after merge).
+3. Confirmed QA passed, **or** left a documented QA skip comment where skip is allowed.
 4. Updated any required documentation.
 5. Obtained any required approvals.
 6. Confirmed the completed work is ready for its intended outcome.
 
-Do not move an issue to **Done** simply because development or drafting has finished.
+**Who moves QA → Done:** Lead (or designated QA). Do not move to **Done** simply because development finished or the PR merged.
 
 ---
 
@@ -100,8 +106,8 @@ Developers should:
 - Ensure appropriate quality before requesting QA.
 - Respond to review feedback promptly.
 - Merge approved Pull Requests where applicable.
-- Keep issue status aligned with reality.
-- Move work to **Done** only when the Definition of Done has been met.
+- Keep issue status aligned with reality (In Progress → In Review; after merge the card is in **QA**).
+- **Do not** move work to **Done** after merge — Lead/QA does that after acceptance (or after a documented QA skip).
 
 ---
 

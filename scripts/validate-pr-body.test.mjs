@@ -200,7 +200,7 @@ describe('validatePrBody', () => {
       boardCheckToken: 'board-pat',
       validateLinkedIssueFn: async () => [],
       validateIssueOnProjectBoardFn: async () => [
-        `Issue #153 is not on Project #3 (Nyumban V1 Launch board)`,
+        `Issue #153 is not on Project #3`,
       ],
     });
     assert.ok(result.errors.some((e) => e.includes('Project #3')));

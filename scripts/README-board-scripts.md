@@ -10,8 +10,7 @@ Org-wide helpers for NyumbanApp GitHub Project boards. **Source of truth** — d
 | `admin` | Nyumban Admin Panel (#4) | https://github.com/orgs/NyumbanApp/projects/4 |
 | `webapp` | Nyumban WebApp (#5) | https://github.com/orgs/NyumbanApp/projects/5 |
 
-**Statuses:** `Backlog`, `Todo`, `In Progress`, `In Review`, `Done`  
-QA is not supported until that column ships on the boards.
+**Statuses:** `Backlog`, `Todo`, `In Progress`, `In Review`, `QA`, `Done`
 
 ## Setup
 
