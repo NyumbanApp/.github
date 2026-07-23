@@ -1,7 +1,9 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import {
+  formatAllowedProjects,
   parseClosesIssueNumber,
+  parseProjectNumbers,
   shouldSkip,
   validateBranchName,
   validatePrBody,
@@ -206,6 +208,24 @@ describe('validatePrBody', () => {
     assert.ok(result.errors.some((e) => e.includes('Project #3')));
   });
 
+  it('passes projectNumbers list to board check', async () => {
+    let received;
+    await validatePrBody({
+      body: VALID_BODY,
+      headRef: VALID_HEAD_REF,
+      repo: 'NyumbanApp/nyumban-app-backend',
+      projectNumbers: [3, 4],
+      githubToken: 'fake',
+      boardCheckToken: 'board-pat',
+      validateLinkedIssueFn: async () => [],
+      validateIssueOnProjectBoardFn: async (args) => {
+        received = args.projectNumbers;
+        return [];
+      },
+    });
+    assert.deepEqual(received, [3, 4]);
+  });
+
   it('skips board check without board token', async () => {
     let boardCalled = false;
     const result = await validatePrBody({
@@ -248,5 +268,36 @@ describe('validatePrBody', () => {
       validateLinkedIssueFn: async () => [],
     });
     assert.ok(result.errors.some((e) => e.includes('Branch Naming Contract')));
+  });
+});
+
+describe('parseProjectNumbers', () => {
+  it('reads comma-separated PROJECT_NUMBERS', () => {
+    assert.deepEqual(
+      parseProjectNumbers({ projectNumbersEnv: '3,4', projectNumberEnv: '3' }),
+      [3, 4],
+    );
+  });
+
+  it('falls back to single PROJECT_NUMBER', () => {
+    assert.deepEqual(
+      parseProjectNumbers({ projectNumbersEnv: '', projectNumberEnv: '5' }),
+      [5],
+    );
+  });
+
+  it('prefers explicit projectNumbers array', () => {
+    assert.deepEqual(
+      parseProjectNumbers({ projectNumbers: [3, 4], projectNumber: 5 }),
+      [3, 4],
+    );
+  });
+});
+
+describe('formatAllowedProjects', () => {
+  it('formats one, two, and many boards', () => {
+    assert.equal(formatAllowedProjects([3]), 'Project #3');
+    assert.equal(formatAllowedProjects([3, 4]), 'Project #3 or #4');
+    assert.equal(formatAllowedProjects([3, 4, 5]), 'Project #3, #4, or #5');
   });
 });

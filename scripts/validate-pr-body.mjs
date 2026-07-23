@@ -167,14 +167,51 @@ export async function validateLinkedIssue({ token, owner, repo, issueNumber }) {
   return errors;
 }
 
+/** Parse allowed board numbers from env or options. Prefer PROJECT_NUMBERS (comma-separated). */
+export function parseProjectNumbers({
+  projectNumbers,
+  projectNumber,
+  projectNumbersEnv = process.env.PROJECT_NUMBERS,
+  projectNumberEnv = process.env.PROJECT_NUMBER,
+} = {}) {
+  if (Array.isArray(projectNumbers) && projectNumbers.length > 0) {
+    return [...new Set(projectNumbers.map(Number).filter((n) => Number.isFinite(n) && n > 0))];
+  }
+  if (projectNumber != null && projectNumber !== '') {
+    const n = Number(projectNumber);
+    if (Number.isFinite(n) && n > 0) return [n];
+  }
+  const fromList = String(projectNumbersEnv ?? '')
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean)
+    .map(Number)
+    .filter((n) => Number.isFinite(n) && n > 0);
+  if (fromList.length > 0) return [...new Set(fromList)];
+  const single = Number.parseInt(String(projectNumberEnv ?? '3'), 10);
+  return Number.isFinite(single) && single > 0 ? [single] : [3];
+}
+
+export function formatAllowedProjects(projectNumbers) {
+  if (projectNumbers.length === 1) return `Project #${projectNumbers[0]}`;
+  if (projectNumbers.length === 2) {
+    return `Project #${projectNumbers[0]} or #${projectNumbers[1]}`;
+  }
+  const head = projectNumbers.slice(0, -1).map((n) => `#${n}`).join(', ');
+  const last = projectNumbers[projectNumbers.length - 1];
+  return `Project ${head}, or #${last}`;
+}
+
 export async function validateIssueOnProjectBoard({
   token,
   owner,
   repo,
   issueNumber,
   projectNumber,
+  projectNumbers,
 }) {
   const errors = [];
+  const allowed = parseProjectNumbers({ projectNumbers, projectNumber });
   const headers = {
     Authorization: `Bearer ${token}`,
     Accept: 'application/vnd.github+json',
@@ -214,10 +251,10 @@ export async function validateIssueOnProjectBoard({
   }
 
   const items = gql.data?.repository?.issue?.projectItems?.nodes ?? [];
-  const onProject = items.some((node) => node.project?.number === projectNumber);
+  const onProject = items.some((node) => allowed.includes(node.project?.number));
   if (!onProject) {
     errors.push(
-      `Issue #${issueNumber} is not on Project #${projectNumber}`,
+      `Issue #${issueNumber} is not on ${formatAllowedProjects(allowed)}`,
     );
   }
 
@@ -225,10 +262,17 @@ export async function validateIssueOnProjectBoard({
 }
 
 /** @deprecated Use validateLinkedIssue + validateIssueOnProjectBoard */
-export async function validateIssueOnBoard({ token, owner, repo, issueNumber, projectNumber }) {
+export async function validateIssueOnBoard({ token, owner, repo, issueNumber, projectNumber, projectNumbers }) {
   const errors = await validateLinkedIssue({ token, owner, repo, issueNumber });
   if (errors.length > 0) return errors;
-  return validateIssueOnProjectBoard({ token, owner, repo, issueNumber, projectNumber });
+  return validateIssueOnProjectBoard({
+    token,
+    owner,
+    repo,
+    issueNumber,
+    projectNumber,
+    projectNumbers,
+  });
 }
 
 export async function validatePrBody({
@@ -239,6 +283,7 @@ export async function validatePrBody({
   headRef = '',
   repo = '',
   projectNumber = 3,
+  projectNumbers,
   githubToken = '',
   boardCheckToken = '',
   validateLinkedIssueFn = validateLinkedIssue,
@@ -264,6 +309,7 @@ export async function validatePrBody({
 
   let boardCheckSkipped = false;
   const [owner, repoName] = repo.split('/');
+  const allowedProjects = parseProjectNumbers({ projectNumbers, projectNumber });
 
   if (owner && repoName && githubToken) {
     const linkedErrors = await validateLinkedIssueFn({
@@ -281,7 +327,7 @@ export async function validatePrBody({
       owner,
       repo: repoName,
       issueNumber: closes.number,
-      projectNumber,
+      projectNumbers: allowedProjects,
     });
     errors.push(...boardErrors);
   } else if (owner && repoName) {
@@ -309,7 +355,7 @@ export async function main() {
   const labels = labelsRaw.map((label) => (typeof label === 'string' ? label : label.name));
   const headRef = process.env.PR_HEAD_REF ?? '';
   const repo = process.env.REPO ?? '';
-  const projectNumber = Number.parseInt(process.env.PROJECT_NUMBER ?? '3', 10);
+  const projectNumbers = parseProjectNumbers();
   const githubToken = process.env.GITHUB_TOKEN ?? '';
   const boardCheckToken = (process.env.BOARD_CHECK_TOKEN ?? '').trim();
 
@@ -320,7 +366,7 @@ export async function main() {
     labels,
     headRef,
     repo,
-    projectNumber,
+    projectNumbers,
     githubToken,
     boardCheckToken,
     onBoardCheckSkipped: () => {
