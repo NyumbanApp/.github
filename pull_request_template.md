@@ -1,8 +1,10 @@
 ## Linked issue
 
-Closes #
+Refs #
 
-<!-- Required. PR must link exactly one board-tracked issue. -->
+<!-- Product work: use Refs #N (issue stays open until QA → Done).
+     Docs/process/chore with QA skip may use Closes #N.
+     Related to #N is also accepted. Link exactly one board issue. -->
 
 ## Summary
 
@@ -18,7 +20,7 @@ Closes #
 
 ## Checklist
 
-- [ ] Linked issue is on [Nyumban V1 Launch board](https://github.com/orgs/NyumbanApp/projects/3) (project 3)
+- [ ] Linked issue is on the correct project board (Mobile #3 / Admin #4 / WebApp #5)
 - [ ] Branch name follows the [Branch Naming Contract](https://github.com/NyumbanApp/.github/blob/main/docs/contracts/branch-naming-contract.md)
 - [ ] Acceptance criteria on the issue are addressed
 - [ ] Steps to test above are complete and reproducible

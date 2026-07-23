@@ -9,7 +9,7 @@
 # Boards: mobile | admin | webapp
 # Status: Backlog | Todo | In Progress | In Review | QA | Done
 #
-# Does not enforce In Progress WIP or Definition of Done — follow those contracts manually.
+# Does not enforce In Progress WIP, In Review, or Definition of Done — follow those contracts manually.
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

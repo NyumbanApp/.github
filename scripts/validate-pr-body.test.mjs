@@ -3,6 +3,7 @@ import { describe, it } from 'node:test';
 import {
   formatAllowedProjects,
   parseClosesIssueNumber,
+  parseLinkedIssueNumber,
   parseProjectNumbers,
   shouldSkip,
   validateBranchName,
@@ -14,7 +15,7 @@ const VALID_HEAD_REF = 'task/153-removes-ide-tooling-from-git';
 
 const VALID_BODY = `## Linked issue
 
-Closes #153
+Refs #153
 
 ## Summary
 
@@ -28,7 +29,7 @@ Removes IDE tooling from git tracking.
 
 ## Checklist
 
-- [x] Linked issue is on Nyumban V1 Launch board (project 3)
+- [x] Linked issue is on the correct project board (Mobile #3 / Admin #4 / WebApp #5)
 - [x] Branch name follows the Branch Naming Contract
 - [x] Acceptance criteria on the issue are addressed
 - [x] Steps to test above are complete and reproducible
@@ -73,27 +74,35 @@ describe('shouldSkip', () => {
   });
 });
 
-describe('parseClosesIssueNumber', () => {
-  it('parses single Closes #N', () => {
-    assert.deepEqual(parseClosesIssueNumber('Closes #42'), { number: 42 });
+describe('parseLinkedIssueNumber', () => {
+  it('parses single Refs #N', () => {
+    assert.deepEqual(parseLinkedIssueNumber('Refs #42'), { number: 42 });
   });
 
-  it('parses Closes #N only from Linked issue section', () => {
+  it('parses Related to #N', () => {
+    assert.deepEqual(parseLinkedIssueNumber('Related to #42'), { number: 42 });
+  });
+
+  it('parses Closes #N (docs/chore QA skip)', () => {
+    assert.deepEqual(parseLinkedIssueNumber('Closes #42'), { number: 42 });
+  });
+
+  it('parses Refs #N only from Linked issue section', () => {
     const body = `## Linked issue
 
-Closes #42
+Refs #42
 
 ## Checklist
 
-- [x] Linked issue uses Closes #99 and issue is on board`;
-    assert.deepEqual(parseClosesIssueNumber(body), { number: 42 });
+- [x] Linked issue uses Refs #99 and issue is on board`;
+    assert.deepEqual(parseLinkedIssueNumber(body), { number: 42 });
   });
 
   it('fails when missing', () => {
-    assert.ok(parseClosesIssueNumber('no link').error);
+    assert.ok(parseLinkedIssueNumber('no link').error);
   });
 
-  it('fails when Linked issue section has no Closes link', () => {
+  it('fails when Linked issue section has no link keyword', () => {
     const body = `## Linked issue
 
 See parent issue.
@@ -101,11 +110,15 @@ See parent issue.
 ## Checklist
 
 - [x] Closes #99 in checklist only`;
-    assert.ok(parseClosesIssueNumber(body).error);
+    assert.ok(parseLinkedIssueNumber(body).error);
   });
 
   it('fails on multiple in Linked issue section', () => {
-    assert.ok(parseClosesIssueNumber('## Linked issue\n\nCloses #1\nCloses #2').error);
+    assert.ok(parseLinkedIssueNumber('## Linked issue\n\nRefs #1\nRefs #2').error);
+  });
+
+  it('parseClosesIssueNumber alias still works', () => {
+    assert.deepEqual(parseClosesIssueNumber('Refs #7'), { number: 7 });
   });
 });
 
@@ -167,7 +180,7 @@ describe('validateBranchName', () => {
 
   it('rejects issue number mismatch', () => {
     assert.ok(
-      validateBranchName('bug/168-login', 99).some((e) => e.includes('must match Closes #99')),
+      validateBranchName('bug/168-login', 99).some((e) => e.includes('must match linked issue #99')),
     );
   });
 
@@ -178,7 +191,11 @@ describe('validateBranchName', () => {
 
 describe('validatePrBody', () => {
   it('skips draft without API', async () => {
-    const result = await validatePrBody({ body: '', draft: true });
+    const result = await validatePrBody({
+      body: VALID_BODY,
+      draft: true,
+      headRef: VALID_HEAD_REF,
+    });
     assert.equal(result.skipped, true);
   });
 
@@ -188,7 +205,7 @@ describe('validatePrBody', () => {
       headRef: VALID_HEAD_REF,
       repo: 'NyumbanApp/nyumban-mobile-app-frontend',
       githubToken: 'fake',
-      validateLinkedIssueFn: async () => [`Issue #153 is closed — link an open issue`],
+      validateLinkedIssueFn: async () => ['Issue #153 is closed — link an open issue'],
     });
     assert.ok(result.errors.length > 0);
   });

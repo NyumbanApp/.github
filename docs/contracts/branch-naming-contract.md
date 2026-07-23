@@ -50,7 +50,7 @@ The script reads the issue title, derives type + slug, updates `main`, and creat
 ## Developer responsibilities
 
 - Create branches with the script or the exact contract format
-- Ensure branch issue number matches `Closes #N` in the PR
+- Ensure branch issue number matches the linked issue in the PR (`Refs #N` preferred; `Related to #N` / `Closes #N` also accepted)
 - Record branch name on the issue (issue template field)
 - Base branch: `main`
 
@@ -58,7 +58,7 @@ The script reads the issue title, derives type + slug, updates `main`, and creat
 
 ## Enforcement
 
-**Day one:** PR template CI rejects PRs whose head branch fails the naming regex or whose issue number disagrees with `Closes #N`.
+**Day one:** PR template CI rejects PRs whose head branch fails the naming regex or whose issue number disagrees with the linked issue (`Refs` / `Related to` / `Closes` #N).
 
 Skipped (same as PR template check): draft PRs, Dependabot/Renovate, `skip-pr-template` label.
 
@@ -67,6 +67,7 @@ Skipped (same as PR template check): draft PRs, Dependabot/Renovate, `skip-pr-te
 ## Related documents
 
 - [In Progress Contract](./in-progress-contract.md)
+- [In Review Contract](./in-review-contract.md)
 - [GitHub issue workflow (mobile)](https://github.com/NyumbanApp/nyumban-mobile-app-frontend/blob/main/docs/process/github-workflow.md)
 - [`create-branch.sh`](../../scripts/create-branch.sh)
 

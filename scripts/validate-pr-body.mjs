@@ -5,7 +5,7 @@ const REQUIRED_HEADINGS = ['## Summary', '## Steps to test', '## Checklist'];
 const MIN_CHECKLIST_ITEMS = 6;
 const BRANCH_PATTERN = /^(feature|bug|task)\/(\d+)-[a-z0-9]+(-[a-z0-9]+)*$/;
 
-export function validateBranchName(headRef, closesIssueNumber) {
+export function validateBranchName(headRef, linkedIssueNumber) {
   const errors = [];
   if (!headRef?.trim()) {
     errors.push('Missing PR head branch');
@@ -21,9 +21,9 @@ export function validateBranchName(headRef, closesIssueNumber) {
   }
 
   const branchIssueNumber = Number.parseInt(match[2], 10);
-  if (closesIssueNumber && branchIssueNumber !== closesIssueNumber) {
+  if (linkedIssueNumber && branchIssueNumber !== linkedIssueNumber) {
     errors.push(
-      `Branch issue #${branchIssueNumber} must match Closes #${closesIssueNumber}`,
+      `Branch issue #${branchIssueNumber} must match linked issue #${linkedIssueNumber}`,
     );
   }
 
@@ -40,8 +40,8 @@ export function shouldSkip({ draft, author, labels }) {
   return { skip: false };
 }
 
-function findClosesIssueMatches(text) {
-  return [...text.matchAll(/\bCloses\s+#(\d+)/gi)];
+function findLinkedIssueMatches(text) {
+  return [...text.matchAll(/\b(?:Refs|Related to|Closes)\s+#(\d+)/gi)];
 }
 
 /** Normalize GitHub PR bodies that use Windows CRLF so heading matching works. */
@@ -55,19 +55,34 @@ function isOptionalChecklistItem(line) {
   return /CI passes/i.test(line);
 }
 
-export function parseClosesIssueNumber(body) {
+/**
+ * Parse exactly one linked board issue from the Linked issue section.
+ * Preferred: `Refs #N`. Also accepts `Related to #N` and `Closes #N` (docs/chore QA skip).
+ */
+export function parseLinkedIssueNumber(body) {
   const normalized = normalizePrBody(body);
   const linkedIssueSection = extractSection(normalized, 'Linked issue').trim();
   const searchText = linkedIssueSection || normalized;
-  const matches = findClosesIssueMatches(searchText);
+  const matches = findLinkedIssueMatches(searchText);
 
   if (matches.length === 0) {
-    return { error: 'Missing `Closes #N` (link exactly one board issue)' };
+    return {
+      error:
+        'Missing `Refs #N` (or `Related to #N` / `Closes #N`) — link exactly one board issue',
+    };
   }
   if (matches.length > 1) {
-    return { error: 'Multiple `Closes #N` links found — use exactly one issue per PR' };
+    return {
+      error:
+        'Multiple issue links found (`Refs` / `Related to` / `Closes`) — use exactly one issue per PR',
+    };
   }
   return { number: Number.parseInt(matches[0][1], 10) };
+}
+
+/** @deprecated Use parseLinkedIssueNumber */
+export function parseClosesIssueNumber(body) {
+  return parseLinkedIssueNumber(body);
 }
 
 export function extractSection(body, heading) {
@@ -297,14 +312,14 @@ export async function validatePrBody({
 
   const errors = [];
   const normalizedBody = normalizePrBody(body ?? '');
-  const closes = parseClosesIssueNumber(normalizedBody);
+  const linked = parseLinkedIssueNumber(normalizedBody);
 
-  if (closes.error) {
-    errors.push(closes.error);
+  if (linked.error) {
+    errors.push(linked.error);
     return { skipped: false, errors, boardCheckSkipped: false };
   }
 
-  errors.push(...validateBranchName(headRef, closes.number));
+  errors.push(...validateBranchName(headRef, linked.number));
   errors.push(...validateStructure(normalizedBody));
 
   let boardCheckSkipped = false;
@@ -316,7 +331,7 @@ export async function validatePrBody({
       token: githubToken,
       owner,
       repo: repoName,
-      issueNumber: closes.number,
+      issueNumber: linked.number,
     });
     errors.push(...linkedErrors);
   }
@@ -326,7 +341,7 @@ export async function validatePrBody({
       token: boardCheckToken,
       owner,
       repo: repoName,
-      issueNumber: closes.number,
+      issueNumber: linked.number,
       projectNumbers: allowedProjects,
     });
     errors.push(...boardErrors);

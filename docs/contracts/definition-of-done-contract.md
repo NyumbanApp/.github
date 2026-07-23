@@ -77,7 +77,7 @@ Move an issue to **Done** only when you have:
 5. Obtained any required approvals.
 6. Confirmed the completed work is ready for its intended outcome.
 
-**Who moves QA → Done:** Lead (or designated QA). Do not move to **Done** simply because development finished or the PR merged.
+**Who moves QA → Done:** Lead (or designated QA). Do not move to **Done** simply because development finished or the PR merged. When moving to Done, **close the issue** (product PRs use `Refs #N` so merge does not auto-close).
 
 ---
 
@@ -107,6 +107,7 @@ Developers should:
 - Respond to review feedback promptly.
 - Merge approved Pull Requests where applicable.
 - Keep issue status aligned with reality (In Progress → In Review; after merge the card is in **QA**).
+- Use `Refs #N` on product PRs so merge does not close the issue ([In Review Contract](./in-review-contract.md)).
 - **Do not** move work to **Done** after merge — Lead/QA does that after acceptance (or after a documented QA skip).
 
 ---
@@ -149,6 +150,7 @@ Automation should support good engineering practice rather than replace it.
 ## Related documents
 
 - [In Progress Contract](https://github.com/NyumbanApp/.github/blob/main/docs/contracts/in-progress-contract.md)
+- [In Review Contract](https://github.com/NyumbanApp/.github/blob/main/docs/contracts/in-review-contract.md)
 - [GitHub Issue Workflow](https://github.com/NyumbanApp/nyumban-mobile-app-frontend/blob/main/docs/process/github-workflow.md)
 - [NyumbanApp Organisation Defaults](https://github.com/NyumbanApp/.github)
 - [GitHub Projects](https://github.com/orgs/NyumbanApp/projects)
@@ -160,8 +162,8 @@ Automation should support good engineering practice rather than replace it.
 | Principle | Practice |
 |-----------|----------|
 | Complete the agreed work | Acceptance criteria satisfied |
-| Verify quality | Applicable quality checks have passed |
-| Merge approved code | Pull Request merged where applicable |
+| Verify quality | QA pass or documented skip |
+| Merge approved code | Pull Request merged where applicable (`Refs #N` keeps issue open for QA) |
 | Ready for its intended outcome | Ready for publishing, release, deployment, implementation, operational use, or handover |
-| Status reflects reality | Done means genuinely complete |
+| Status reflects reality | Done means genuinely complete; Lead closes the issue |
 

@@ -59,7 +59,7 @@ Issues with **two or more assignees** are excluded from the WIP limit. They may 
 ## Developer responsibilities
 
 - Keep board status honest: In Progress means you are actively implementing
-- Link pull requests with `Closes #N` and move to **In Review** when the PR is open
+- Link pull requests with `Refs #N` (product) and move to **In Review** when the PR is ready for reviewers ([In Review Contract](./in-review-contract.md))
 - Raise blockers as **issue comments**, not WhatsApp threads
 - Check your WIP before moving a new sole-assignee issue to In Progress
 
@@ -70,7 +70,7 @@ Issues with **two or more assignees** are excluded from the WIP limit. They may 
 - Review boards weekly for assignees with **2+ sole-assignee** issues In Progress on the same board
 - Remind developers to align status with reality (e.g. In Review without an open PR)
 - Approve rare exceptions to the WIP limit; document the reason on the issue
-- Close the loop: merge → verify acceptance → **Done** → close issue
+- Close the loop: merge → **QA** → verify acceptance → **Done** → close issue
 
 ---
 
@@ -89,6 +89,8 @@ We introduce automation only after the team has practiced this contract manually
 ## Related documents
 
 - [GitHub issue workflow](https://github.com/NyumbanApp/nyumban-mobile-app-frontend/blob/main/docs/process/github-workflow.md) — full delivery pipeline
+- [In Review Contract](./in-review-contract.md)
+- [Definition of Done Contract](./definition-of-done-contract.md)
 - [NyumbanApp org defaults](https://github.com/NyumbanApp/.github) — PR templates and validation
 - [GitHub Projects](https://github.com/orgs/NyumbanApp/projects) — all boards
 
