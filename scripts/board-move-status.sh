@@ -7,7 +7,7 @@
 #     --issue 183 --status "In Review"
 #
 # Boards: mobile | admin | webapp
-# Status: Backlog | Todo | In Progress | In Review | Done
+# Status: Backlog | Todo | In Progress | In Review | QA | Done
 #
 # Does not enforce In Progress WIP or Definition of Done — follow those contracts manually.
 set -euo pipefail

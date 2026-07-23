@@ -57,13 +57,14 @@ gh auth refresh -s project,read:org
 
 Full guide: [`scripts/README-board-scripts.md`](./scripts/README-board-scripts.md).
 
-## Workflow
+## Project board workflows (manual, once per board)
 
-Issue → branch → PR (`Closes #N`) → review → merge → **QA** → **Done**.
+On projects **#3 / #4 / #5** → **Project settings → Workflows**:
 
-After merge, the card lands in **QA** (not Done). Lead/QA verifies acceptance criteria, then moves to Done. Docs/process chores may skip QA with a short issue comment (`QA skip: docs-only`). Developers do not self-move to Done after merge.
+1. **Pull request merged** → set Status to **QA** (not Done).
+2. **Item closed** → leave disabled / do not auto-set Done (so close does not race past QA).
 
-Details: [github-workflow.md](https://github.com/NyumbanApp/nyumban-mobile-app-frontend/blob/main/docs/process/github-workflow.md).
+Built-in Project workflow targets are not editable via API; configure them in the GitHub UI.
 
 ## Development
 
