@@ -37,6 +37,8 @@ An issue may be in **In Review** only when:
 
 Do **not** use `Closes #N` on product PRs. Auto-close skips the QA stage.
 
+`Refs #N` is required for product PRs. Separately, connect the PR on the issue **Development** sidebar so the board **Linked pull requests** column fills. Do not rely on `Refs` alone for that column. A Development connection can auto-close the issue on merge — if that happens on product work, **reopen** the issue and keep the card in **QA**.
+
 ---
 
 ## When to move to In Review
@@ -93,6 +95,7 @@ After merge for product work: the card moves to **QA**; the issue stays **open**
 
 - Move to **In Review** when the PR is ready for reviewers (not while still drafting)
 - Use `Refs #N` for product work so merge does not close the issue
+- Connect the PR on the issue **Development** sidebar so **Linked pull requests** shows on the board
 - Respond to review comments promptly
 - Keep board status honest
 - After merge, leave the issue for QA — do not self-close product issues
@@ -110,10 +113,10 @@ After merge for product work: the card moves to **QA**; the issue stays **open**
 
 ## Project lead responsibilities
 
-- Ensure In Review cards have an open linked PR
+- Ensure In Review cards have an open linked PR (**Linked pull requests** column filled via Development connect, not `Refs` alone)
 - Cover review when no peer is available
 - After merge, ensure cards land in **QA** and are not left Done/closed early
-- Weekly hygiene: scan In Review and QA columns
+- Weekly hygiene: scan In Review and QA columns (including empty **Linked pull requests**)
 
 ---
 
@@ -143,6 +146,7 @@ After merge for product work: the card moves to **QA**; the issue stays **open**
 |-----------|----------|
 | In Review ≠ QA | Review is pre-merge; acceptance is post-merge |
 | Link without auto-close | Product PRs use `Refs #N` |
+| Board shows the PR | Development **Connect** fills **Linked pull requests** (`Refs` alone does not) |
 | Status matches reality | Open ready PR ↔ In Review |
 | Lead closes after QA | Done means verified, not merely merged |
 | Manual first | Required reviews / hard Closes bans come later |
