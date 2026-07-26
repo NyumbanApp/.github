@@ -19,7 +19,7 @@ on:
         required: false
         default: 'product'
       create_release:
-        description: 'true' to create/update a GitHub Release for tag_name
+        description: Set to true to create or update a GitHub Release for tag_name
         type: string
         required: false
         default: 'false'
