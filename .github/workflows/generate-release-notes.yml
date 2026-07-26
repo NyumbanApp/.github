@@ -4,20 +4,20 @@ on:
   workflow_call:
     inputs:
       tag_name:
-        description: Tag name when creating a GitHub Release (empty = dry-run only)
+        description: Tag name when creating a GitHub Release (use none for dry-run)
         type: string
         required: false
-        default: ''
+        default: 'none'
       since:
-        description: ISO date or leave empty to use previous tag date / 14 days ago
+        description: ISO date or none to use previous release / last 14 days
         type: string
         required: false
-        default: ''
+        default: 'none'
       mode:
         description: product (exclude Docs/Process) or internal
         type: string
         required: false
-        default: product
+        default: 'product'
       create_release:
         description: 'true' to create/update a GitHub Release for tag_name
         type: string
@@ -47,14 +47,14 @@ jobs:
           TAG_NAME: ${{ inputs.tag_name }}
         run: |
           set -euo pipefail
-          if [[ -n "${INPUT_SINCE}" ]]; then
+          if [[ -n "${INPUT_SINCE}" && "${INPUT_SINCE}" != "none" ]]; then
             echo "value=${INPUT_SINCE}" >> "$GITHUB_OUTPUT"
             echo "Using provided since=${INPUT_SINCE}"
             exit 0
           fi
 
           # Prefer previous tag's committer date when cutting a release
-          if [[ -n "${TAG_NAME}" ]]; then
+          if [[ -n "${TAG_NAME}" && "${TAG_NAME}" != "none" ]]; then
             prev=$(gh api "repos/${{ github.repository }}/releases" --jq '.[].tag_name' 2>/dev/null | grep -v "^${TAG_NAME}$" | head -1 || true)
             if [[ -n "${prev}" ]]; then
               # Use published_at of previous release if available
@@ -102,7 +102,7 @@ jobs:
           path: release-notes.md
 
       - name: Create or update GitHub Release
-        if: inputs.create_release == 'true' && inputs.tag_name != ''
+        if: inputs.create_release == 'true' && inputs.tag_name != 'none' && inputs.tag_name != ''
         env:
           GH_TOKEN: ${{ github.token }}
           TAG: ${{ inputs.tag_name }}

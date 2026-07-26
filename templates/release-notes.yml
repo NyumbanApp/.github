@@ -27,7 +27,7 @@ jobs:
   notes:
     uses: NyumbanApp/.github/.github/workflows/generate-release-notes.yml@main
     with:
-      tag_name: ${{ github.event_name == 'push' && github.ref_type == 'tag' && github.ref_name || '' }}
-      since: ${{ github.event.inputs.since || '' }}
+      tag_name: ${{ github.event_name == 'push' && github.ref_type == 'tag' && github.ref_name || 'none' }}
+      since: ${{ github.event.inputs.since || 'none' }}
       mode: ${{ github.event.inputs.mode || 'product' }}
       create_release: ${{ github.event_name == 'push' && github.ref_type == 'tag' && 'true' || 'false' }}
