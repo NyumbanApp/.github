@@ -21,6 +21,9 @@ Shared defaults for all [NyumbanApp](https://github.com/NyumbanApp) repositories
 | [`pull_request_template.md`](./pull_request_template.md) | Default PR description for new pull requests |
 | [`.github/workflows/validate-pr-body.yml`](./.github/workflows/validate-pr-body.yml) | Reusable workflow: PR template check |
 | [`scripts/validate-pr-body.mjs`](./scripts/validate-pr-body.mjs) | Validation logic |
+| [`scripts/generate-release-notes.mjs`](./scripts/generate-release-notes.mjs) | Product/internal release notes from closed issues |
+| [`scripts/README-release-notes.md`](./scripts/README-release-notes.md) | How to cut a release and preview notes |
+| [`.github/workflows/generate-release-notes.yml`](./.github/workflows/generate-release-notes.yml) | Reusable workflow: tag → GitHub Release |
 
 Application repos opt in with `.github/workflows/pr-template-check.yml` that checks out this validator (do not duplicate validation logic inline).
 
@@ -75,6 +78,24 @@ On projects **#3 / #4 / #5** → **Project settings → Workflows**:
 2. **Item closed** → leave disabled / do not auto-set Done (so close does not race past QA).
 
 Built-in Project workflow targets are not editable via API; configure them in the GitHub UI.
+
+## Release notes
+
+Product-facing notes live on each app repo’s **GitHub Releases** page (not a file in this org repo).
+
+- **Source:** issues closed since the previous release (Done ≈ Lead closes after QA)
+- **Product mode:** excludes Area Docs / Process
+- **Trigger:** push tag `v*` (creates/updates the Release), or Actions dry-run via `workflow_dispatch`
+- **Guide:** [`scripts/README-release-notes.md`](./scripts/README-release-notes.md)
+
+```bash
+git tag v1.2.3 && git push origin v1.2.3
+# → https://github.com/NyumbanApp/<repo>/releases
+```
+
+### Phase B — Internal release log (after product notes are stable)
+
+Same generator with `--mode internal` (includes Docs/Process). Publish as a **separate** artifact (e.g. Release asset `INTERNAL_CHANGELOG.md` or an Actions-only summary) — do **not** overwrite the product Release body. Use for eng retros and audits.
 
 ## Development
 

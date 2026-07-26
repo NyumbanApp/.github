@@ -1,0 +1,33 @@
+name: Release notes
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      since:
+        description: ISO date (optional; default previous release or last 14 days)
+        required: false
+        type: string
+      mode:
+        description: product (default) or internal
+        required: false
+        default: product
+        type: choice
+        options:
+          - product
+          - internal
+
+permissions:
+  contents: write
+  issues: read
+
+jobs:
+  notes:
+    uses: NyumbanApp/.github/.github/workflows/generate-release-notes.yml@main
+    with:
+      tag_name: ${{ github.event_name == 'push' && github.ref_type == 'tag' && github.ref_name || '' }}
+      since: ${{ github.event.inputs.since || '' }}
+      mode: ${{ github.event.inputs.mode || 'product' }}
+      create_release: ${{ github.event_name == 'push' && github.ref_type == 'tag' && 'true' || 'false' }}

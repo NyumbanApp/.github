@@ -1,0 +1,120 @@
+name: Generate release notes
+
+on:
+  workflow_call:
+    inputs:
+      tag_name:
+        description: Tag name when creating a GitHub Release (empty = dry-run only)
+        type: string
+        required: false
+        default: ''
+      since:
+        description: ISO date or leave empty to use previous tag date / 14 days ago
+        type: string
+        required: false
+        default: ''
+      mode:
+        description: product (exclude Docs/Process) or internal
+        type: string
+        required: false
+        default: product
+      create_release:
+        description: 'true' to create/update a GitHub Release for tag_name
+        type: string
+        required: false
+        default: 'false'
+
+permissions:
+  contents: write
+  issues: read
+
+jobs:
+  notes:
+    name: Generate release notes
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout org scripts
+        uses: actions/checkout@v4
+        with:
+          repository: NyumbanApp/.github
+          path: org-github
+
+      - name: Resolve since timestamp
+        id: since
+        env:
+          GH_TOKEN: ${{ github.token }}
+          INPUT_SINCE: ${{ inputs.since }}
+          TAG_NAME: ${{ inputs.tag_name }}
+        run: |
+          set -euo pipefail
+          if [[ -n "${INPUT_SINCE}" ]]; then
+            echo "value=${INPUT_SINCE}" >> "$GITHUB_OUTPUT"
+            echo "Using provided since=${INPUT_SINCE}"
+            exit 0
+          fi
+
+          # Prefer previous tag's committer date when cutting a release
+          if [[ -n "${TAG_NAME}" ]]; then
+            prev=$(gh api "repos/${{ github.repository }}/releases" --jq '.[].tag_name' 2>/dev/null | grep -v "^${TAG_NAME}$" | head -1 || true)
+            if [[ -n "${prev}" ]]; then
+              # Use published_at of previous release if available
+              pub=$(gh api "repos/${{ github.repository }}/releases/tags/${prev}" --jq .published_at 2>/dev/null || true)
+              if [[ -n "${pub}" && "${pub}" != "null" ]]; then
+                echo "value=${pub}" >> "$GITHUB_OUTPUT"
+                echo "Using previous release ${prev} published_at=${pub}"
+                exit 0
+              fi
+            fi
+          fi
+
+          # Default: last 14 days
+          since=$(date -u -d '14 days ago' +%Y-%m-%dT%H:%M:%SZ 2>/dev/null || date -u -v-14d +%Y-%m-%dT%H:%M:%SZ)
+          echo "value=${since}" >> "$GITHUB_OUTPUT"
+          echo "Using default since=${since}"
+
+      - name: Generate notes
+        id: gen
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          SINCE: ${{ steps.since.outputs.value }}
+          MODE: ${{ inputs.mode }}
+        run: |
+          set -euo pipefail
+          node org-github/scripts/generate-release-notes.mjs \
+            --repo "$REPO" \
+            --since "$SINCE" \
+            --mode "$MODE" > release-notes.md
+          echo "Wrote release-notes.md ($(wc -l < release-notes.md) lines)"
+
+      - name: Publish job summary
+        run: |
+          {
+            echo "## Release notes preview (\`${{ inputs.mode }}\`)"
+            echo
+            cat release-notes.md
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload notes artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-notes-${{ inputs.mode }}
+          path: release-notes.md
+
+      - name: Create or update GitHub Release
+        if: inputs.create_release == 'true' && inputs.tag_name != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ inputs.tag_name }}
+        run: |
+          set -euo pipefail
+          if gh release view "$TAG" --repo "${{ github.repository }}" >/dev/null 2>&1; then
+            gh release edit "$TAG" --repo "${{ github.repository }}" --notes-file release-notes.md
+            echo "Updated release $TAG"
+          else
+            gh release create "$TAG" --repo "${{ github.repository }}" \
+              --title "$TAG" \
+              --notes-file release-notes.md \
+              --verify-tag
+            echo "Created release $TAG"
+          fi
