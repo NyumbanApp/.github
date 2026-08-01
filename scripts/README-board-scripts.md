@@ -9,6 +9,7 @@ Org-wide helpers for NyumbanApp GitHub Project boards. **Source of truth** — d
 | `mobile` | Nyumban Mobile App (#3) | https://github.com/orgs/NyumbanApp/projects/3 |
 | `admin` | Nyumban Admin Panel (#4) | https://github.com/orgs/NyumbanApp/projects/4 |
 | `webapp` | Nyumban WebApp (#5) | https://github.com/orgs/NyumbanApp/projects/5 |
+| `landing` | Nyumban Landing Web App (#10) | https://github.com/orgs/NyumbanApp/projects/10 |
 
 **Statuses:** `Backlog`, `Todo`, `In Progress`, `In Review`, `QA`, `Done`
 
@@ -54,6 +55,7 @@ These scripts do **not** enforce the [In Progress](https://github.com/NyumbanApp
 | `mobile` | `Mobile`, `Backend`, `AWS`, `Docs`, `Process` |
 | `admin` | `Admin Frontend`, `Admin Backend`, `Docs`, `Process` |
 | `webapp` | `Web Frontend`, `Backend`, `Docs`, `Process` |
+| `landing` | `Landing Frontend`, `Docs`, `Process` |
 
 ### Labels (automatic)
 
