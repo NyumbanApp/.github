@@ -64,6 +64,12 @@ Skipped (same as PR template check): draft PRs, Dependabot/Renovate, `skip-pr-te
 
 ---
 
+## Branch cleanup and auto-delete
+
+- **Now (Free):** merged feature branches are cleaned up periodically; `main` / `staging` are never deleted.
+- **After GitHub Team:** enable native delete-on-merge with `main`/`staging` protected — see [branch-auto-delete-after-team.md](../ops/branch-auto-delete-after-team.md).
+- Unmerged leftovers awaiting owner confirm: [branch-hygiene-unmerged-review.md](../ops/branch-hygiene-unmerged-review.md).
+
 ## Related documents
 
 - [In Progress Contract](./in-progress-contract.md)
