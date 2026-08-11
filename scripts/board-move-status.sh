@@ -6,7 +6,7 @@
 #   ./scripts/board-move-status.sh --board mobile --repo NyumbanApp/nyumban-mobile-app-frontend \
 #     --issue 183 --status "In Review"
 #
-# Boards: mobile | admin | webapp
+# Boards: mobile | admin | webapp | design
 # Status: Backlog | Todo | In Progress | In Review | QA | Done
 #
 # Does not enforce In Progress WIP, In Review, or Definition of Done — follow those contracts manually.
@@ -41,8 +41,8 @@ done
 }
 
 case "$BOARD" in
-  mobile|admin|webapp) ;;
-  *) echo "Unknown --board: $BOARD (mobile|admin|webapp)" >&2; exit 1 ;;
+  mobile|admin|webapp|design) ;;
+  *) echo "Unknown --board: $BOARD (mobile|admin|webapp|design)" >&2; exit 1 ;;
 esac
 
 # shellcheck source=/dev/null

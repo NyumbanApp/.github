@@ -14,7 +14,7 @@
 #     --body "Short context."
 #
 # Required: --board --type --area --priority --assignee --title
-# Boards: mobile | admin | webapp
+# Boards: mobile | admin | webapp | design
 # Status default: Backlog
 # Labels: auto-applied from type/area/priority (type miss → enhancement)
 # Does not enforce In Progress WIP, In Review, or Definition of Done — follow those contracts manually.
@@ -68,8 +68,8 @@ done
 }
 
 case "$BOARD" in
-  mobile|admin|webapp) ;;
-  *) echo "Unknown --board: $BOARD (mobile|admin|webapp)" >&2; exit 1 ;;
+  mobile|admin|webapp|design) ;;
+  *) echo "Unknown --board: $BOARD (mobile|admin|webapp|design)" >&2; exit 1 ;;
 esac
 
 # shellcheck source=/dev/null
