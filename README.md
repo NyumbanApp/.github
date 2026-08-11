@@ -13,10 +13,10 @@ Shared defaults for all [NyumbanApp](https://github.com/NyumbanApp) repositories
 | [`docs/contracts/definition-of-done-contract.md`](./docs/contracts/definition-of-done-contract.md) | Defines when work is complete and may move to **Done** |
 | [`docs/contracts/branch-naming-contract.md`](./docs/contracts/branch-naming-contract.md) | Branch format: `type/issue#-slug` (CI enforced) |
 | [`scripts/create-branch.sh`](./scripts/create-branch.sh) | Create a contract-compliant branch from an issue |
-| [`scripts/board-list.sh`](./scripts/board-list.sh) | List cards on Mobile / Admin / WebApp boards |
+| [`scripts/board-list.sh`](./scripts/board-list.sh) | List cards on Mobile / Admin / WebApp / Design System boards |
 | [`scripts/board-move-status.sh`](./scripts/board-move-status.sh) | Move an issue’s board status from the terminal |
 | [`scripts/board-create-issue.sh`](./scripts/board-create-issue.sh) | Create issue + add to board + set type/priority/area |
-| [`scripts/boards/`](./scripts/boards/) | Per-board project field IDs (`mobile`, `admin`, `webapp`) |
+| [`scripts/boards/`](./scripts/boards/) | Per-board project field IDs (`mobile`, `admin`, `webapp`, `design`) |
 | [`scripts/README-board-scripts.md`](./scripts/README-board-scripts.md) | Board CLI setup and usage |
 | [`pull_request_template.md`](./pull_request_template.md) | Default PR description for new pull requests |
 | [`.github/workflows/validate-pr-body.yml`](./.github/workflows/validate-pr-body.yml) | Reusable workflow: PR template check |
