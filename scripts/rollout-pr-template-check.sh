@@ -50,6 +50,7 @@ REPOS=(
   nyumban-forum-web-app-backend
   nyumban-landing-web-app
   nyumban-web-app-frontend
+  nyumban-design-system
 )
 
 WORKDIR="${TMPDIR:-/tmp}/nyumban-pr-template-rollout"

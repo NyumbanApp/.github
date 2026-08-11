@@ -20,7 +20,7 @@ Refs #
 
 ## Checklist
 
-- [ ] Linked issue is on the correct project board (Mobile #3 / Admin #4 / WebApp #5)
+- [ ] Linked issue is on the correct project board (Mobile #3 / Admin #4 / WebApp #5 / Design System #11)
 - [ ] Branch name follows the [Branch Naming Contract](https://github.com/NyumbanApp/.github/blob/main/docs/contracts/branch-naming-contract.md)
 - [ ] Acceptance criteria on the issue are addressed
 - [ ] Steps to test above are complete and reproducible
