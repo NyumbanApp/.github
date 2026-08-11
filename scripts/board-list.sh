@@ -5,7 +5,7 @@
 #   ./scripts/board-list.sh --board webapp
 #   ./scripts/board-list.sh --board mobile --status Todo
 #
-# Boards: mobile | admin | webapp
+# Boards: mobile | admin | webapp | design
 # Status: Backlog | Todo | In Progress | In Review | Done
 set -euo pipefail
 
@@ -34,8 +34,8 @@ done
 }
 
 case "$BOARD" in
-  mobile|admin|webapp) ;;
-  *) echo "Unknown --board: $BOARD (mobile|admin|webapp)" >&2; exit 1 ;;
+  mobile|admin|webapp|design) ;;
+  *) echo "Unknown --board: $BOARD (mobile|admin|webapp|design)" >&2; exit 1 ;;
 esac
 
 # shellcheck source=/dev/null

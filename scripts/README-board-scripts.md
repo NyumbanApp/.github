@@ -9,6 +9,7 @@ Org-wide helpers for NyumbanApp GitHub Project boards. **Source of truth** — d
 | `mobile` | Nyumban Mobile App (#3) | https://github.com/orgs/NyumbanApp/projects/3 |
 | `admin` | Nyumban Admin Panel (#4) | https://github.com/orgs/NyumbanApp/projects/4 |
 | `webapp` | Nyumban WebApp (#5) | https://github.com/orgs/NyumbanApp/projects/5 |
+| `design` | Nyumban Design System (#11) | https://github.com/orgs/NyumbanApp/projects/11 |
 
 **Statuses:** `Backlog`, `Todo`, `In Progress`, `In Review`, `QA`, `Done`
 
@@ -37,7 +38,7 @@ These scripts do **not** enforce the [In Progress](https://github.com/NyumbanApp
 
 | Flag | Required | Values |
 |------|----------|--------|
-| `--board` | Yes | `mobile` \| `admin` \| `webapp` |
+| `--board` | Yes | `mobile` \| `admin` \| `webapp` \| `design` |
 | `--type` | Yes | `Bug` \| `Feature` \| `Task` |
 | `--area` | Yes | See per-board areas below |
 | `--priority` | Yes | `Low` \| `Medium` \| `High` \| `Urgent` |
@@ -54,6 +55,7 @@ These scripts do **not** enforce the [In Progress](https://github.com/NyumbanApp
 | `mobile` | `Mobile`, `Backend`, `AWS`, `Docs`, `Process` |
 | `admin` | `Admin Frontend`, `Admin Backend`, `Docs`, `Process` |
 | `webapp` | `Web Frontend`, `Backend`, `Docs`, `Process` |
+| `design` | `Platform`, `Tokens`, `Docs`, `Process` |
 
 ### Labels (automatic)
 
@@ -81,6 +83,15 @@ Do not hand-manage competing `type/*` / `area/*` / `priority/*` labels — use t
   --assignee HANDLE \
   --title "Task | Admin Frontend | Summary" \
   --body "Short context."
+
+./scripts/board-create-issue.sh --board design \
+  --repo NyumbanApp/nyumban-design-system \
+  --type Task --area Docs --priority Medium --status Todo \
+  --assignee HANDLE \
+  --title "Task | Docs | New-project checklist for Nyumban web frontends" \
+  --body "Platform catalog follow-up."
 ```
 
 `--repo` is optional when `gh` can detect the current repository.
+
+**Design System board** is for frontend platform work (`nyumban-design-system` — tokens, RFCs, packages). Do not put consumer WebApp product features there (use `--board webapp`).
