@@ -12,6 +12,7 @@ Shared defaults for all [NyumbanApp](https://github.com/NyumbanApp) repositories
 | [`docs/contracts/in-review-contract.md`](./docs/contracts/in-review-contract.md) | In Review = open PR for code review; product PRs use `Refs #N` |
 | [`docs/contracts/definition-of-done-contract.md`](./docs/contracts/definition-of-done-contract.md) | Defines when work is complete and may move to **Done** |
 | [`docs/contracts/branch-naming-contract.md`](./docs/contracts/branch-naming-contract.md) | Branch format: `type/issue#-slug` (CI enforced) |
+| [`docs/contracts/delivery-lead-contract.md`](./docs/contracts/delivery-lead-contract.md) | Delivery Lead: intake, assignment, board hygiene, QA coordination |
 | [`scripts/create-branch.sh`](./scripts/create-branch.sh) | Create a contract-compliant branch from an issue |
 | [`scripts/board-list.sh`](./scripts/board-list.sh) | List cards on Mobile / Admin / WebApp / Design System boards |
 | [`scripts/board-move-status.sh`](./scripts/board-move-status.sh) | Move an issue’s board status from the terminal |
@@ -34,6 +35,7 @@ The following organisation-wide contracts define the engineering standards used 
 - [In Progress Contract](./docs/contracts/in-progress-contract.md)
 - [In Review Contract](./docs/contracts/in-review-contract.md)
 - [Definition of Done Contract](./docs/contracts/definition-of-done-contract.md)
+- [Delivery Lead Contract](./docs/contracts/delivery-lead-contract.md)
 
 ### Board check (phased)
 
@@ -66,7 +68,7 @@ Full guide: [`scripts/README-board-scripts.md`](./scripts/README-board-scripts.m
 
 Issue → branch → PR (`Refs #N` for product work) → **In Review** → merge → **QA** → **Done**.
 
-Product PRs must not use `Closes #N` (that auto-closes the issue and skips QA). Lead/QA closes the issue when moving to Done. Docs/process chores may use `Closes #N` with a QA skip comment.
+Product PRs must not use `Closes #N` (that auto-closes the issue and skips QA). Delivery Lead or CTO closes the issue when moving to Done (see [Delivery Lead Contract](./docs/contracts/delivery-lead-contract.md) and Definition of Done). Docs/process chores may use `Closes #N` with a QA skip comment.
 
 Details: [In Review Contract](./docs/contracts/in-review-contract.md), [github-workflow.md](https://github.com/NyumbanApp/nyumban-mobile-app-frontend/blob/main/docs/process/github-workflow.md).
 
