@@ -20,7 +20,14 @@ Moving an issue to **Done** signals that the agreed scope has been fully deliver
 
 An issue may only be moved to **Done** when all applicable completion requirements have been satisfied.
 
-**Merge alone is not Done.** After a PR merges, the card moves to **QA**. Moving to **Done** requires a QA pass (Lead or designated QA) **or** a documented QA skip on the issue (for example `QA skip: docs-only` for docs, process, or pure chore/config). User-facing / product work must go through QA.
+**Merge alone is not Done.** After a PR merges, the card moves to **QA**. Moving to **Done** requires a QA pass **or** a documented QA skip on the issue (for example `QA skip: docs-only` for docs, process, or pure chore/config). User-facing / product work must go through QA.
+
+### Who performs QA
+
+- **Product-critical project tasks:** the **CTO** performs final QA sign-off. The Delivery Lead ensures work reaches QA correctly and routes fails back to **In Progress**.
+- **Non-critical project tasks:** the **Delivery Lead** coordinates QA — performing it or delegating to the assigned developer against the acceptance criteria — with CTO spot-checks.
+
+See the [Delivery Lead Contract](./delivery-lead-contract.md) for intake, assignment, and board ownership.
 
 At minimum:
 
@@ -77,7 +84,12 @@ Move an issue to **Done** only when you have:
 5. Obtained any required approvals.
 6. Confirmed the completed work is ready for its intended outcome.
 
-**Who moves QA → Done:** Lead (or designated QA). Do not move to **Done** simply because development finished or the PR merged. When moving to Done, **close the issue** (product PRs use `Refs #N` so merge does not auto-close).
+**Who moves QA → Done and closes the issue:**
+
+- **Product-critical:** the **CTO** after final QA sign-off.
+- **Otherwise:** the **Delivery Lead** after coordinated QA (or after a documented QA skip).
+
+Do not move to **Done** simply because development finished or the PR merged. Product PRs use `Refs #N` so merge does not auto-close.
 
 ---
 
@@ -108,7 +120,7 @@ Developers should:
 - Merge approved Pull Requests where applicable.
 - Keep issue status aligned with reality (In Progress → In Review; after merge the card is in **QA**).
 - Use `Refs #N` on product PRs so merge does not close the issue ([In Review Contract](./in-review-contract.md)).
-- **Do not** move work to **Done** after merge — Lead/QA does that after acceptance (or after a documented QA skip).
+- **Do not** move work to **Done** after merge — the CTO or Delivery Lead does that after acceptance (or after a documented QA skip), per the QA split above.
 
 ---
 
@@ -122,22 +134,30 @@ Quality Assurance should:
 - Raise defects before an issue is moved to **Done**.
 - Confirm that the completed work satisfies the agreed quality standard.
 
+Ownership of final sign-off follows the product-critical vs non-critical split under **Who performs QA**.
+
 ---
 
-## Project lead responsibilities
+## Delivery Lead and CTO responsibilities
 
-Project leads should:
+**Delivery Lead** should:
 
-- Ensure the Definition of Done is consistently applied.
-- Verify that required reviews and approvals have been completed.
+- Ensure the Definition of Done is consistently applied across boards.
+- Coordinate non-critical QA and route product-critical work to the CTO for sign-off.
 - Return issues to the correct workflow stage if moved to **Done** prematurely.
-- Periodically review completed issues for quality and consistency.
+- Run weekly board hygiene so Status reflects reality.
+
+**CTO** should:
+
+- Perform final QA sign-off for product-critical project tasks.
+- Spot-check non-critical QA as needed.
+- Set priority at intake; the Delivery Lead does not re-prioritize without the CTO.
 
 ---
 
 ## Enforcement
 
-**Phase 1 (Current):** Manual - contributors, QA and project leads apply this contract through normal project reviews.  
+**Phase 1 (Current):** Manual - contributors, Delivery Lead, and CTO apply this contract through normal project reviews.  
 
 **Phase 2 (later, if needed):** Reporting and dashboards identify issues moved to **Done** before satisfying the required conditions.  
 
@@ -149,8 +169,9 @@ Automation should support good engineering practice rather than replace it.
 
 ## Related documents
 
-- [In Progress Contract](https://github.com/NyumbanApp/.github/blob/main/docs/contracts/in-progress-contract.md)
-- [In Review Contract](https://github.com/NyumbanApp/.github/blob/main/docs/contracts/in-review-contract.md)
+- [Delivery Lead Contract](./delivery-lead-contract.md)
+- [In Progress Contract](./in-progress-contract.md)
+- [In Review Contract](./in-review-contract.md)
 - [GitHub Issue Workflow](https://github.com/NyumbanApp/nyumban-mobile-app-frontend/blob/main/docs/process/github-workflow.md)
 - [NyumbanApp Organisation Defaults](https://github.com/NyumbanApp/.github)
 - [GitHub Projects](https://github.com/orgs/NyumbanApp/projects)
@@ -162,8 +183,7 @@ Automation should support good engineering practice rather than replace it.
 | Principle | Practice |
 |-----------|----------|
 | Complete the agreed work | Acceptance criteria satisfied |
-| Verify quality | QA pass or documented skip |
+| Verify quality | QA pass or documented skip (CTO for product-critical; Delivery Lead coordinates otherwise) |
 | Merge approved code | Pull Request merged where applicable (`Refs #N` keeps issue open for QA) |
 | Ready for its intended outcome | Ready for publishing, release, deployment, implementation, operational use, or handover |
-| Status reflects reality | Done means genuinely complete; Lead closes the issue |
-
+| Status reflects reality | Done means genuinely complete; CTO or Delivery Lead closes the issue per the QA split |
