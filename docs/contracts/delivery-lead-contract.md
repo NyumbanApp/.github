@@ -55,7 +55,7 @@ The board reflects reality at all times. The Delivery Lead runs the weekly (~15 
 
 The QA seat is **optional/operational**. Intake, board ownership, and delivery must keep working if the seat is empty.
 
-QA acceptance rules follow the [Definition of Done Contract](./definition-of-done-contract.md).
+QA acceptance rules follow the [Definition of Done Contract](./definition-of-done-contract.md). Issue comment format: [QA pass/fail comment template](../process/qa-pass-fail-comment-template.md).
 
 ---
 
