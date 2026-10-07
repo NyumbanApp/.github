@@ -5,7 +5,7 @@ Copy into the **GitHub issue** comment when work is in **QA**. Test against the 
 ## Reminders
 
 - Test the **AC** — if it is not on the issue, it is out of scope or a new ticket.
-- **FAIL** needs evidence (screenshot or short recording). Paste images into the comment.
+- **FAIL** needs evidence (screenshot or short recording). Paste images (optional) into the comment.
 - **PASS** can stay short.
 - Do **not** close the issue or move to **Done** — Delivery Lead (or CTO for product-critical) does that after pass.
 - Unclear AC → comment and ping the Delivery Lead; do not invent scope.
@@ -40,7 +40,6 @@ Evidence: <screenshot(s) pasted below> (optional)
 ## QA: PASS
 Issue: #N
 Checked AC: all listed on the issue
-Env: …
 Notes: none / minor non-blocking: …
 → Delivery Lead: ready to close
 ```
