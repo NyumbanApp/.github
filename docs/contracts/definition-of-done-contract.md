@@ -132,7 +132,7 @@ Developers should:
 When the **QA** role is staffed, QA should:
 
 - Test the agreed acceptance criteria for non-critical work.
-- Record the outcome (pass / fail) on the issue.
+- Record the outcome (pass / fail) on the issue using the [QA pass/fail comment template](../process/qa-pass-fail-comment-template.md).
 - Raise defects before an issue is moved to **Done**.
 - Confirm that the completed work satisfies the agreed quality standard.
 
