@@ -29,9 +29,7 @@ Steps:
 Expected: …
 Actual: …
 
-Evidence: <screenshot(s) pasted below>
-Env: iOS/Android/Web · build/version · account type
-Retest: after fix → In Progress → fix PR → In Review → merge → QA
+Evidence: <screenshot(s) pasted below> (optional)
 ```
 
 ---
