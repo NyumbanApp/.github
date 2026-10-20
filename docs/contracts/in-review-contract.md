@@ -33,11 +33,15 @@ An issue may be in **In Review** only when:
 | Work type | PR keyword | Issue on merge |
 |-----------|------------|----------------|
 | Product / user-facing | `Refs #N` or `Related to #N` | Stays **open** → card moves to **QA** |
-| Docs / process / pure chore with documented QA skip | `Closes #N` allowed | May auto-close (skip QA with issue comment) |
+| Docs / process / pure chore with documented QA skip | `Closes #N` allowed | Lead closes after documented QA skip (repos disable auto-close on linked merge) |
 
 Do **not** use `Closes #N` on product PRs. Auto-close skips the QA stage.
 
-`Refs #N` is required for product PRs. Separately, connect the PR on the issue **Development** sidebar so the board **Linked pull requests** column fills. Do not rely on `Refs` alone for that column. A Development connection can auto-close the issue on merge — if that happens on product work, **reopen** the issue and keep the card in **QA**.
+`Refs #N` is required for product PRs. After the PR is opened, automation adds a GitHub **Development** link for `Refs #N` / `Related to #N` so the board **Linked pull requests** column fills. Do not rely on the text mention alone.
+
+Coding repos keep **Auto-close issues with merged linked pull requests** **disabled**. That way a Development link fills the board without closing the issue on merge. If a misconfigured repo still auto-closes a `Refs` / `Related to` issue, automation **reopens** it with a QA comment.
+
+Manual Development → “Link a pull request” remains a fallback, not the primary path.
 
 ---
 
@@ -95,7 +99,7 @@ After merge for product work: the card moves to **QA**; the issue stays **open**
 
 - Move to **In Review** when the PR is ready for reviewers (not while still drafting)
 - Use `Refs #N` for product work so merge does not close the issue
-- Connect the PR on the issue **Development** sidebar so **Linked pull requests** shows on the board
+- Confirm **Linked pull requests** filled after open (automation adds the Development link for `Refs` / `Related to`; sidebar connect is the fallback)
 - Respond to review comments promptly
 - Keep board status honest
 - After merge, leave the issue for QA — do not self-close product issues
@@ -113,7 +117,7 @@ After merge for product work: the card moves to **QA**; the issue stays **open**
 
 ## Project lead responsibilities
 
-- Ensure In Review cards have an open linked PR (**Linked pull requests** column filled via Development connect, not `Refs` alone)
+- Ensure In Review cards have an open linked PR (**Linked pull requests** filled by Development automation, not `Refs` text alone)
 - Cover review when no peer is available
 - After merge, ensure cards land in **QA** and are not left Done/closed early
 - Weekly hygiene: scan In Review and QA columns (including empty **Linked pull requests**)
@@ -122,7 +126,7 @@ After merge for product work: the card moves to **QA**; the issue stays **open**
 
 ## Enforcement
 
-**Phase 1 (current):** Manual — PR template defaults to `Refs #`; CI accepts `Refs` / `Related to` / `Closes` (exactly one). Lead and peers apply this contract in review.
+**Phase 1 (current):** PR template defaults to `Refs #`; CI accepts `Refs` / `Related to` / `Closes` (exactly one). After open, automation adds a Development link for `Refs` / `Related to`. Coding repos disable auto-close on merged linked PRs; a backup Action reopens `Refs` / `Related to` issues if a repo still auto-closes. Lead and peers still apply this contract in review.
 
 **Phase 2 (later, if needed):** Branch protection — require status checks and at least one approving review before merge.
 
@@ -146,7 +150,7 @@ After merge for product work: the card moves to **QA**; the issue stays **open**
 |-----------|----------|
 | In Review ≠ QA | Review is pre-merge; acceptance is post-merge |
 | Link without auto-close | Product PRs use `Refs #N` |
-| Board shows the PR | Development **Connect** fills **Linked pull requests** (`Refs` alone does not) |
+| Board shows the PR | Development link (automated for `Refs` / `Related to`) fills **Linked pull requests** |
 | Status matches reality | Open ready PR ↔ In Review |
 | Lead closes after QA | Done means verified, not merely merged |
 | Manual first | Required reviews / hard Closes bans come later |

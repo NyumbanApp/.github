@@ -1,0 +1,65 @@
+name: Link PR Development
+
+# Org reusable entry. Coding repos should checkout this repo and run the
+# script inline (same pattern as pr-template-check) because org policy
+# currently blocks workflow_call reuse.
+
+on:
+  workflow_call:
+    inputs:
+      mode:
+        description: link or reopen-if-refs-closed
+        type: string
+        required: true
+      pr_body:
+        type: string
+        required: false
+        default: ''
+      pr_draft:
+        type: string
+        required: false
+        default: 'false'
+      pr_author:
+        type: string
+        required: false
+        default: ''
+      pr_labels_json:
+        type: string
+        required: false
+        default: '[]'
+      pr_number:
+        type: string
+        required: true
+      pr_merged:
+        type: string
+        required: false
+        default: 'false'
+
+permissions:
+  issues: write
+  pull-requests: write
+  contents: read
+
+jobs:
+  link-or-reopen:
+    name: Link PR Development
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout org scripts
+        uses: actions/checkout@v4
+        with:
+          repository: NyumbanApp/.github
+          path: org-github
+
+      - name: Run Development linker
+        env:
+          MODE: ${{ inputs.mode }}
+          PR_BODY: ${{ inputs.pr_body }}
+          PR_DRAFT: ${{ inputs.pr_draft }}
+          PR_AUTHOR: ${{ inputs.pr_author }}
+          PR_LABELS: ${{ inputs.pr_labels_json }}
+          PR_NUMBER: ${{ inputs.pr_number }}
+          PR_MERGED: ${{ inputs.pr_merged }}
+          REPO: ${{ github.repository }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node org-github/scripts/link-pr-development.mjs
