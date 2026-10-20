@@ -1,3 +1,4 @@
+import fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import {
   normalizePrBody,
@@ -275,7 +276,16 @@ export async function main() {
   }
 }
 
-if (process.argv[1] === fileURLToPath(import.meta.url)) {
+function isExecutedDirectly() {
+  if (!process.argv[1]) return Boolean(process.env.MODE);
+  try {
+    return fs.realpathSync(process.argv[1]) === fs.realpathSync(fileURLToPath(import.meta.url));
+  } catch {
+    return Boolean(process.env.MODE);
+  }
+}
+
+if (isExecutedDirectly()) {
   main().catch((err) => {
     console.error(`::error::${err.message}`);
     process.exit(1);
