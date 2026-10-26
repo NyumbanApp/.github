@@ -33,7 +33,7 @@ An issue may be in **In Review** only when:
 | Work type | PR keyword | Issue on merge |
 |-----------|------------|----------------|
 | Product / user-facing | `Refs #N` or `Related to #N` | Stays **open** → card moves to **QA** |
-| Docs / process / pure chore with documented QA skip | `Closes #N` allowed | Lead closes after documented QA skip (repos disable auto-close on linked merge) |
+| Docs / process / pure chore with documented QA skip | `Closes #N` allowed | Delivery Lead (or CTO) closes after documented QA skip (repos disable auto-close on linked merge) |
 
 Do **not** use `Closes #N` on product PRs. Auto-close skips the QA stage.
 
@@ -89,7 +89,7 @@ After merge for product work: the card moves to **QA**; the issue stays **open**
 
 | Outcome | Action |
 |---------|--------|
-| QA pass | Lead/QA moves to **Done** and **closes** the issue |
+| QA pass | **QA, Delivery Lead, or CTO** (per the [DoD](./definition-of-done-contract.md) split) moves to **Done** and **closes** the issue |
 | QA fail | Move to **In Progress**, comment what failed, open a fix PR (`Refs #N` again) |
 | Docs/chore with `Closes #N` + QA skip comment | May already be closed; confirm Done hygiene |
 
@@ -152,5 +152,5 @@ After merge for product work: the card moves to **QA**; the issue stays **open**
 | Link without auto-close | Product PRs use `Refs #N` |
 | Board shows the PR | Development link (automated for `Refs` / `Related to`) fills **Linked pull requests** |
 | Status matches reality | Open ready PR ↔ In Review |
-| Lead closes after QA | Done means verified, not merely merged |
+| QA or Lead/CTO closes after pass | Done means verified, not merely merged |
 | Manual first | Required reviews / hard Closes bans come later |

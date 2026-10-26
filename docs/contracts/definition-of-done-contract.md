@@ -24,9 +24,9 @@ An issue may only be moved to **Done** when all applicable completion requiremen
 
 ### Who performs QA
 
-- **Product-critical project tasks:** the **CTO** performs final QA sign-off. The Delivery Lead ensures work reaches QA correctly and routes fails back to **In Progress**.
-- **Non-critical project tasks:** when a **QA** role is staffed, **QA** performs acceptance against the acceptance criteria. The Delivery Lead coordinates (routes into QA, fails back to In Progress, closes after pass).
-- **Fallback (QA unstaffed / unavailable):** the Delivery Lead coordinates QA — performing it or delegating to the assigned developer against the acceptance criteria — with CTO spot-checks.
+- **Product-critical project tasks:** **QA or the CTO** may perform acceptance and close after a pass. The Delivery Lead ensures work reaches QA correctly and routes fails back to **In Progress**.
+- **Non-critical project tasks:** when a **QA** role is staffed, **QA** performs acceptance against the acceptance criteria. After a pass, **QA or the Delivery Lead** may close (QA typically closes when they posted PASS). The Delivery Lead coordinates (routes into QA, fails back to In Progress).
+- **Fallback (QA unstaffed / unavailable):** the Delivery Lead coordinates QA — performing it or delegating to the assigned developer against the acceptance criteria — with CTO spot-checks. The Delivery Lead (or CTO) may close after pass.
 
 The QA seat is optional/operational; the pipeline must work without it.
 
@@ -89,8 +89,8 @@ Move an issue to **Done** only when you have:
 
 **Who moves QA → Done and closes the issue:**
 
-- **Product-critical:** the **CTO** after final QA sign-off.
-- **Otherwise:** the **Delivery Lead** after a QA pass when QA is staffed, after fallback coordinated QA when QA is unstaffed, or after a documented QA skip.
+- **Product-critical:** **QA or the CTO** after they pass it.
+- **Otherwise:** **QA or the Delivery Lead** after a QA pass (QA typically closes when they posted PASS). After a documented QA skip, or when QA is unstaffed, the Delivery Lead (or CTO) closes.
 
 Do not move to **Done** simply because development finished or the PR merged. Product PRs use `Refs #N` so merge does not auto-close.
 
@@ -123,7 +123,7 @@ Developers should:
 - Merge approved Pull Requests where applicable.
 - Keep issue status aligned with reality (In Progress → In Review; after merge the card is in **QA**).
 - Use `Refs #N` on product PRs so merge does not close the issue ([In Review Contract](./in-review-contract.md)).
-- **Do not** move work to **Done** after merge — the CTO or Delivery Lead does that after acceptance (or after a documented QA skip), per the QA split above.
+- **Do not** move work to **Done** after merge — developers do not self-close product issues. QA, the Delivery Lead, or the CTO closes after acceptance (or after a documented QA skip), per the QA split above.
 
 ---
 
@@ -131,12 +131,13 @@ Developers should:
 
 When the **QA** role is staffed, QA should:
 
-- Test the agreed acceptance criteria for non-critical work.
+- Test the agreed acceptance criteria (product-critical and non-critical).
 - Record the outcome (pass / fail) on the issue using the [QA pass/fail comment template](../process/qa-pass-fail-comment-template.md).
 - Raise defects before an issue is moved to **Done**.
 - Confirm that the completed work satisfies the agreed quality standard.
+- After PASS, **may** move the issue to **Done** and close it.
 
-Product-critical final sign-off stays with the CTO. Moving non-critical work to **Done** stays with the Delivery Lead after a QA pass (or after the fallback path / documented skip). See **Who performs QA**.
+Product-critical: QA or the CTO may pass and close. Non-critical: QA or the Delivery Lead may close after pass (QA typically closes when they posted PASS). Documented QA skip: Delivery Lead (or CTO) still closes. See **Who performs QA**.
 
 ---
 
@@ -145,14 +146,14 @@ Product-critical final sign-off stays with the CTO. Moving non-critical work to 
 **Delivery Lead** should:
 
 - Ensure the Definition of Done is consistently applied across boards.
-- Route product-critical work to the CTO for sign-off.
-- Coordinate non-critical QA: when QA is staffed, ensure work reaches QA and close after pass; when QA is unstaffed, perform or delegate acceptance against AC.
+- Route product-critical work to QA (or the CTO) for acceptance; QA or the CTO may pass and close.
+- Coordinate non-critical QA: when QA is staffed, ensure work reaches QA; QA or the Lead may close after pass. When QA is unstaffed, perform or delegate acceptance against AC and may close.
 - Return issues to the correct workflow stage if moved to **Done** prematurely.
-- Run weekly board hygiene so Status reflects reality.
+- Run weekly board hygiene so Status reflects reality (drain QA / close once Done — closer can be QA).
 
 **CTO** should:
 
-- Perform final QA sign-off for product-critical project tasks.
+- May perform acceptance and close product-critical project tasks after a pass (QA may also pass and close these).
 - Spot-check non-critical QA as needed.
 - Set priority at intake; the Delivery Lead does not re-prioritize without the CTO.
 
@@ -186,7 +187,7 @@ Automation should support good engineering practice rather than replace it.
 | Principle | Practice |
 |-----------|----------|
 | Complete the agreed work | Acceptance criteria satisfied |
-| Verify quality | QA pass or documented skip (CTO for product-critical; QA for day-to-day when staffed; Delivery Lead coordinates / fallback otherwise) |
+| Verify quality | QA pass or documented skip (QA or CTO for product-critical; QA or Delivery Lead for day-to-day when staffed; Delivery Lead coordinates / fallback otherwise) |
 | Merge approved code | Pull Request merged where applicable (`Refs #N` keeps issue open for QA) |
 | Ready for its intended outcome | Ready for publishing, release, deployment, implementation, operational use, or handover |
-| Status reflects reality | Done means genuinely complete; CTO or Delivery Lead closes the issue per the QA split |
+| Status reflects reality | Done means genuinely complete; QA or Lead/CTO closes the issue after pass per the QA split |
