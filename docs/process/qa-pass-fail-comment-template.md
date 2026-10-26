@@ -7,7 +7,7 @@ Copy into the **GitHub issue** comment when work is in **QA**. Test against the 
 - Test the **AC** — if it is not on the issue, it is out of scope or a new ticket.
 - **FAIL** needs evidence (screenshot or short recording). Paste images (optional) into the comment.
 - **PASS** can stay short.
-- Do **not** close the issue or move to **Done** — Delivery Lead (or CTO for product-critical) does that after pass.
+- After **PASS**, QA **may** move to **Done** and close the issue (product-critical: QA or CTO).
 - Unclear AC → comment and ping the Delivery Lead; do not invent scope.
 
 Related: [Definition of Done](../contracts/definition-of-done-contract.md) · [Delivery Lead](../contracts/delivery-lead-contract.md)
@@ -41,5 +41,5 @@ Evidence: <screenshot(s) pasted below> (optional)
 Issue: #N
 Checked AC: all listed on the issue
 Notes: none / minor non-blocking: …
-→ Delivery Lead: ready to close
+→ Done: closed after PASS
 ```

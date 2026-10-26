@@ -45,13 +45,13 @@ The Delivery Lead assigns each issue to the developer best suited by expertise, 
 
 ### 5. Board ownership
 
-The board reflects reality at all times. The Delivery Lead runs the weekly (~15 min) board hygiene: promote Backlog → Todo, drain QA, ensure every active card has assignee + Priority + Area, flag WIP-limit breaches, and close issues once Done.
+The board reflects reality at all times. The Delivery Lead runs the weekly (~15 min) board hygiene: promote Backlog → Todo, drain QA, ensure every active card has assignee + Priority + Area, flag WIP-limit breaches, and close issues once Done (the closer can be QA).
 
 ### 6. QA coordination
 
-- **Product-critical project tasks:** the **CTO** performs final QA sign-off. The Delivery Lead ensures work reaches QA correctly and routes fails back to In Progress.
-- **Non-critical project tasks:** when a **QA** role is staffed, **QA** performs acceptance against the AC. The Delivery Lead **coordinates** — ensuring the card reaches QA, routing fails back to In Progress, and closing after a QA pass.
-- **Fallback (QA unstaffed / unavailable):** the Delivery Lead coordinates QA as before — performing it or delegating to the assigned developer against the AC — with CTO spot-checks.
+- **Product-critical project tasks:** **QA or the CTO** may perform acceptance and close after a pass. The Delivery Lead ensures work reaches QA correctly and routes fails back to In Progress. The Lead does not exclusively own product-critical sign-off.
+- **Non-critical project tasks:** when a **QA** role is staffed, **QA** performs acceptance against the AC. The Delivery Lead **coordinates** — ensuring the card reaches QA and routing fails back to In Progress. After a pass, **QA or the Delivery Lead** may close (QA typically closes when they posted PASS). The Lead does not exclusively close.
+- **Fallback (QA unstaffed / unavailable):** the Delivery Lead coordinates QA as before — performing it or delegating to the assigned developer against the AC — with CTO spot-checks, and may close.
 
 The QA seat is **optional/operational**. Intake, board ownership, and delivery must keep working if the seat is empty.
 
@@ -61,8 +61,9 @@ QA acceptance rules follow the [Definition of Done Contract](./definition-of-don
 
 ## Boundaries — what the Delivery Lead does NOT do
 
-- Does **not** own final QA sign-off for product-critical project tasks. That stays with the CTO.
-- Does **not** replace the **QA** role when that seat is staffed for day-to-day acceptance (the Lead still coordinates and closes non-critical work after QA pass).
+- Does **not** exclusively own product-critical sign-off. **QA or the CTO** may pass and close those; the Lead still routes work into QA and fails back.
+- Does **not** exclusively close non-critical work after a pass. When QA is staffed, **QA or the Delivery Lead** may close; the Lead still coordinates.
+- Does **not** replace the **QA** role when that seat is staffed for day-to-day acceptance.
 - Does **not** re-prioritize work without the CTO. Priority is set by the CTO at intake.
 - Does **not** replace peer review. Code review is distributed via CODEOWNERS and branch protection; the Lead reviews only as a normal code owner, not as a dedicated reviewer.
 - Does **not** stop coding. This is a player-coach role, not a full-time management role.
